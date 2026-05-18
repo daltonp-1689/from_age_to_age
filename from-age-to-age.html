@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Age to Age</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Karla:wght@300;400;500&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#1c1510;--ink2:#7a5525;--ink3:#b8a888;
+  --gold:#c4a060;--gold2:#a07830;--gold3:#d4b870;
+  --crimson:#7a3b10;--crimson2:#5a2a08;
+  --cream:#ffffff;--parch:#faf5ec;--parch2:#f0ebe0;
+  --bd:rgba(28,21,16,0.1);--bd2:rgba(28,21,16,0.2);
+  --green:#3a6a12;--green-bg:#eaf3db;--green2:#4a8a1a;
+  --red:#7a1414;--red-bg:#faeaea;--red2:#c03030;
+  --blue:#0a3f7a;--blue-bg:#e4eef8;--blue2:#1560b8;
+  --shadow:0 1px 4px rgba(28,21,16,0.07);
+}
+html,body{height:100%;font-family:'Lora',Georgia,serif;background:#fff;color:var(--ink);font-size:16px;line-height:1.7;overflow:hidden;}
+
+/* SHELL */
+.shell{display:flex;flex-direction:column;height:100vh;}
+
+/* TOPBAR */
+.topbar{flex-shrink:0;display:flex;align-items:center;gap:14px;padding:10px 22px;border-bottom:1.5px solid var(--parch2);background:#fff;z-index:10;}
+.brand{font-family:'Lora',serif;font-size:17px;font-weight:600;cursor:pointer;letter-spacing:0.01em;color:var(--ink);line-height:1.1;}
+.brand em{font-style:italic;font-weight:400;color:var(--gold2);}
+.brand-sub{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);font-family:'Karla',sans-serif;margin-top:2px;}
+.xp-wrap{flex:1;margin:0 12px;}
+.xp-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--ink3);margin-bottom:3px;letter-spacing:0.02em;font-family:'Karla',sans-serif;}
+.xp-track{height:4px;background:var(--parch2);border-radius:2px;overflow:hidden;}
+.xp-fill{height:100%;background:var(--gold);border-radius:2px;transition:width 0.6s cubic-bezier(.4,0,.2,1);}
+.topbar-pills{display:flex;gap:6px;}
+.pill{display:flex;align-items:center;gap:5px;font-size:11px;padding:4px 11px;border-radius:4px;background:var(--parch);border:1px solid var(--parch2);color:var(--ink2);font-family:'Karla',sans-serif;}
+.pill i{font-size:13px;}
+.streak{color:var(--crimson);font-weight:500;}
+
+/* MAIN SCROLL AREA */
+.main{flex:1;overflow-y:auto;overflow-x:hidden;background:#fff;}
+
+/* SCREENS */
+.screen{display:none;min-height:100%;background:#fff;}
+.screen.active{display:block;}
+
+/* ─── HOME ─── */
+.home-wrap{max-width:700px;margin:0 auto;padding:36px 24px;}
+.home-header{margin-bottom:28px;padding-bottom:24px;border-bottom:1.5px solid var(--parch2);}
+.home-header h1{font-family:'Lora',serif;font-size:32px;font-weight:600;line-height:1.15;margin-bottom:8px;color:var(--ink);}
+.home-header h1 em{font-style:italic;font-weight:400;color:var(--gold2);}
+.home-header p{font-size:14px;color:var(--ink3);max-width:480px;font-family:'Karla',sans-serif;font-weight:400;line-height:1.6;}
+.section-eyebrow{font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;font-family:'Karla',sans-serif;}
+.track-card{border:1px solid var(--parch2);border-radius:8px;overflow:hidden;cursor:pointer;transition:border-color 0.2s,box-shadow 0.15s;background:#fff;margin-bottom:10px;box-shadow:var(--shadow);}
+.track-card:hover:not(.locked){border-color:var(--bd2);box-shadow:0 3px 12px rgba(28,21,16,0.1);}
+.track-card.locked{opacity:0.42;cursor:not-allowed;}
+.tc-body{padding:16px 18px 12px;display:flex;align-items:flex-start;gap:14px;}
+.tc-icon{width:42px;height:42px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:var(--parch);color:var(--gold);}
+.tc-icon.complete{background:var(--green-bg);color:var(--green2);}
+.tc-text{flex:1;}
+.tc-name{font-family:'Lora',serif;font-size:16px;font-weight:600;margin-bottom:3px;color:var(--ink);}
+.tc-desc{font-size:12px;color:var(--ink3);line-height:1.5;font-family:'Karla',sans-serif;}
+.tc-pills{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;}
+.tc-pill{font-size:9px;padding:2px 8px;border-radius:3px;background:var(--parch);color:var(--ink3);font-family:'Karla',sans-serif;letter-spacing:0.04em;}
+.tc-footer{display:flex;align-items:center;justify-content:space-between;padding:7px 18px;border-top:1px solid var(--parch2);font-size:10px;color:var(--ink3);font-family:'Karla',sans-serif;}
+.tc-progress-track{flex:1;height:2px;background:var(--parch2);border-radius:1px;margin:0 12px;overflow:hidden;}
+.tc-progress-fill{height:100%;border-radius:1px;background:var(--gold);transition:width 0.5s;}
+.tc-progress-fill.done{background:var(--green2);}
+.tc-badge{font-size:9px;padding:2px 9px;border-radius:3px;font-weight:500;font-family:'Karla',sans-serif;letter-spacing:0.04em;}
+.badge-new{background:var(--blue-bg);color:var(--blue2);}
+.badge-progress{background:var(--parch);color:var(--gold2);}
+.badge-done{background:var(--green-bg);color:var(--green2);}
+.badge-locked{background:var(--parch2);color:var(--ink3);}
+
+/* ─── TRACK DETAIL ─── */
+.detail-wrap{max-width:700px;margin:0 auto;padding:28px 24px;background:#fff;}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink3);cursor:pointer;margin-bottom:20px;padding:6px 0;transition:color 0.15s;font-family:'Karla',sans-serif;letter-spacing:0.02em;}
+.back-btn:hover{color:var(--ink);}
+.detail-header{padding-bottom:18px;border-bottom:1.5px solid var(--parch2);margin-bottom:22px;}
+.detail-eyebrow{font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;font-family:'Karla',sans-serif;}
+.detail-header h2{font-family:'Lora',serif;font-size:26px;font-weight:600;margin-bottom:6px;color:var(--ink);}
+.detail-header p{font-size:13px;color:var(--ink3);font-family:'Karla',sans-serif;line-height:1.6;}
+.lessons-label{font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;font-family:'Karla',sans-serif;}
+.lesson-row{display:flex;align-items:center;gap:14px;padding:13px 16px;border:1px solid var(--parch2);border-radius:6px;cursor:pointer;transition:all 0.15s;background:#fff;margin-bottom:7px;box-shadow:var(--shadow);}
+.lesson-row:hover:not(.locked){border-color:var(--bd2);background:var(--parch);}
+.lesson-row.locked{opacity:0.42;cursor:not-allowed;}
+.lesson-row.complete{border-color:#b0d880;}
+.lesson-num{width:34px;height:34px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0;background:var(--parch);color:var(--ink3);font-family:'Karla',sans-serif;}
+.lesson-num.complete{background:var(--green-bg);color:var(--green2);}
+.lesson-num.active{background:var(--gold);color:#fff;}
+.lesson-info{flex:1;}
+.lesson-name{font-size:15px;font-weight:400;margin-bottom:2px;font-family:'Lora',serif;color:var(--ink);}
+.lesson-meta{font-size:11px;color:var(--ink3);font-family:'Karla',sans-serif;}
+.lesson-right{display:flex;align-items:center;gap:8px;}
+.lesson-stars{display:flex;gap:3px;}
+.lesson-star{font-size:13px;color:var(--parch2);}
+.lesson-star.lit{color:var(--gold);}
+.lesson-lock{font-size:16px;color:var(--ink3);}
+
+/* ─── ARTICLE ─── */
+.article-wrap{max-width:660px;margin:0 auto;padding:28px 24px;background:#fff;}
+.read-bar{height:2px;background:var(--parch2);position:sticky;top:0;z-index:5;}
+.read-bar-fill{height:100%;background:var(--gold);transition:width 0.2s;}
+.article-eyebrow{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.art-tag{font-size:9px;padding:3px 10px;border-radius:3px;background:var(--parch);color:var(--gold2);font-family:'Karla',sans-serif;letter-spacing:0.08em;text-transform:uppercase;border:1px solid var(--parch2);}
+.art-time{font-size:11px;color:var(--ink3);display:flex;align-items:center;gap:4px;font-family:'Karla',sans-serif;}
+.article-title{font-family:'Lora',serif;font-size:32px;font-weight:600;line-height:1.15;margin-bottom:10px;color:var(--ink);}
+.article-sub{font-size:16px;color:var(--ink3);font-style:italic;margin-bottom:24px;line-height:1.6;font-family:'Lora',serif;font-weight:400;}
+.art-divider{width:36px;height:1.5px;background:var(--gold);margin-bottom:28px;}
+.article-body h3{font-family:'Lora',serif;font-size:20px;font-weight:600;margin:2rem 0 0.75rem;color:var(--ink);}
+.article-body p{margin-bottom:1.1rem;font-size:15.5px;line-height:1.85;color:var(--ink);font-family:'Lora',serif;font-weight:400;}
+.article-body strong{color:var(--crimson);font-weight:600;}
+.pull-quote{border-left:2px solid var(--gold);padding:12px 20px;margin:1.5rem 0;background:var(--parch);}
+.pull-quote p{font-style:italic;font-size:16px;color:var(--ink2);margin:0;font-family:'Lora',serif;}
+.pull-quote cite{font-size:11px;color:var(--ink3);display:block;margin-top:6px;font-family:'Karla',sans-serif;}
+.atl-box{border:1px solid var(--parch2);border-radius:6px;padding:14px 16px;margin:1.5rem 0;background:#fff;}
+.atl-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;font-family:'Karla',sans-serif;}
+.atl-row{display:flex;gap:12px;margin-bottom:7px;font-size:12px;font-family:'Karla',sans-serif;}
+.atl-year{color:var(--gold2);font-weight:500;min-width:54px;flex-shrink:0;}
+.atl-text{color:var(--ink3);}
+.article-nav{display:flex;justify-content:space-between;align-items:center;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--parch2);}
+
+/* ── ARTICLE FIGURES — improved ── */
+.art-fig{margin:1.75rem 0;border:1px solid var(--parch2);border-radius:8px;overflow:hidden;background:var(--parch);}
+
+/* Full-width image figure */
+.art-fig .fig-img-wrap{
+  position:relative;
+  width:100%;
+  background:var(--parch2);
+  min-height:200px;
+  overflow:hidden;
+}
+.art-fig .fig-img-wrap img{
+  width:100%;
+  display:block;
+  object-fit:cover;
+  max-height:360px;
+  transition:opacity 0.4s;
+}
+/* Skeleton shimmer while loading */
+.art-fig .fig-img-wrap::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,var(--parch2) 25%,var(--parch) 50%,var(--parch2) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.6s infinite;
+  z-index:0;
+}
+.art-fig .fig-img-wrap img.loaded{position:relative;z-index:1;}
+.art-fig .fig-img-wrap img.error-hide{display:none;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* Portrait layout */
+.art-fig.portrait{display:flex;align-items:stretch;}
+.art-fig.portrait .fig-img-wrap{
+  width:200px;
+  min-width:200px;
+  flex-shrink:0;
+  min-height:260px;
+  max-height:none;
+}
+.art-fig.portrait .fig-img-wrap img{
+  width:100%;
+  height:100%;
+  max-height:none;
+  object-fit:cover;
+  object-position:top center;
+}
+.art-fig.portrait .fig-body{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:20px 22px;
+  border-left:1px solid var(--parch2);
+}
+
+figcaption,.fig-caption-text{
+  padding:10px 16px;
+  font-size:11px;
+  color:var(--ink3);
+  font-family:'Karla',sans-serif;
+  border-top:1px solid var(--parch2);
+  line-height:1.6;
+  background:#fff;
+}
+figcaption strong{color:var(--ink2);font-weight:500;}
+.art-fig.portrait figcaption{display:none;} /* caption is inside fig-body for portrait */
+
+.fig-label{font-size:9px;letter-spacing:0.13em;text-transform:uppercase;color:var(--gold);font-family:'Karla',sans-serif;margin-bottom:5px;}
+.fig-title{font-family:'Lora',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:8px;line-height:1.3;}
+.fig-desc{font-size:12px;color:var(--ink3);font-family:'Karla',sans-serif;line-height:1.6;}
+
+/* Map figure — Leaflet */
+.art-map{margin:1.75rem 0;border:1px solid var(--parch2);border-radius:8px;overflow:hidden;}
+.art-map .map-container{height:340px;width:100%;}
+.art-map figcaption{padding:10px 16px;font-size:11px;color:var(--ink3);font-family:'Karla',sans-serif;border-top:1px solid var(--parch2);background:#fff;line-height:1.6;}
+.art-map figcaption strong{color:var(--ink2);font-weight:500;}
+
+/* Paul's journey — image replacement */
+.art-fig-journey{
+  margin:1.75rem 0;
+  border:1px solid var(--parch2);
+  border-radius:8px;
+  overflow:hidden;
+  background:var(--parch);
+}
+.art-fig-journey .fig-img-wrap{
+  position:relative;
+  width:100%;
+  background:var(--parch2);
+  min-height:240px;
+  overflow:hidden;
+}
+.art-fig-journey .fig-img-wrap::before{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,var(--parch2) 25%,var(--parch) 50%,var(--parch2) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.6s infinite;
+  z-index:0;
+}
+.art-fig-journey .fig-img-wrap img{
+  width:100%;
+  display:block;
+  object-fit:contain;
+  max-height:420px;
+  background:var(--parch);
+  position:relative;
+  z-index:1;
+  transition:opacity 0.4s;
+}
+.art-fig-journey figcaption{
+  padding:10px 16px;
+  font-size:11px;
+  color:var(--ink3);
+  font-family:'Karla',sans-serif;
+  border-top:1px solid var(--parch2);
+  background:#fff;
+  line-height:1.6;
+}
+.art-fig-journey figcaption strong{color:var(--ink2);font-weight:500;}
+
+/* ─── LESSON / QUESTION ─── */
+.lesson-wrap{max-width:640px;margin:0 auto;padding:24px;background:#fff;}
+
+/* lives bar */
+.lives-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.lives-display{display:flex;gap:6px;}
+.heart{font-size:22px;transition:all 0.3s;}
+.heart.full{color:var(--crimson);}
+.heart.empty{color:var(--parch2);}
+.heart.lost{animation:heartbreak 0.4s ease forwards;}
+@keyframes heartbreak{0%{transform:scale(1.3);}50%{transform:scale(0.7);opacity:0.5;}100%{transform:scale(1);opacity:1;color:var(--parch2);}}
+.lesson-prog-wrap{display:flex;align-items:center;gap:10px;flex:1;margin-left:16px;}
+.lesson-prog-track{flex:1;height:4px;background:var(--parch2);border-radius:2px;overflow:hidden;}
+.lesson-prog-fill{height:100%;background:var(--green2);border-radius:2px;transition:width 0.4s;}
+.lesson-prog-label{font-size:11px;color:var(--ink3);white-space:nowrap;font-family:'Karla',sans-serif;}
+
+/* question card */
+.q-card{border:1px solid var(--parch2);border-radius:8px;overflow:hidden;margin-bottom:16px;background:#fff;box-shadow:var(--shadow);}
+.q-card-header{padding:9px 16px;border-bottom:1px solid var(--parch2);background:var(--parch);display:flex;align-items:center;justify-content:space-between;}
+.q-era{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);font-family:'Karla',sans-serif;}
+.q-type-badge{font-size:9px;padding:2px 8px;border-radius:3px;background:#fff;color:var(--ink3);font-family:'Karla',sans-serif;border:1px solid var(--parch2);}
+.q-body{padding:20px 18px;}
+.q-text{font-family:'Lora',serif;font-size:19px;line-height:1.4;color:var(--ink);font-weight:400;}
+
+/* options */
+.options{display:flex;flex-direction:column;gap:8px;margin-top:1rem;}
+.opt{padding:12px 15px;border:1px solid var(--parch2);border-radius:6px;background:#fff;color:var(--ink);font-family:'Lora',serif;font-size:14px;text-align:left;cursor:pointer;transition:all 0.15s;line-height:1.5;display:flex;align-items:center;gap:12px;}
+.opt-letter{width:24px;height:24px;border-radius:3px;background:var(--parch);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0;transition:all 0.15s;font-family:'Karla',sans-serif;color:var(--ink3);}
+.opt:hover:not(.answered){border-color:var(--gold);background:var(--parch);}
+.opt:hover:not(.answered) .opt-letter{background:var(--gold);color:#fff;}
+.opt.correct{background:var(--green-bg);border-color:#b0d880;color:var(--green);}
+.opt.correct .opt-letter{background:var(--green2);color:#fff;}
+.opt.wrong{background:var(--red-bg);border-color:#e8a0a0;color:var(--red);}
+.opt.wrong .opt-letter{background:var(--red2);color:#fff;}
+
+/* tf options */
+.tf-row{display:flex;gap:10px;margin-top:1rem;}
+.tf-btn{flex:1;padding:18px;border:1px solid var(--parch2);border-radius:6px;background:#fff;color:var(--ink);font-family:'Lora',serif;font-size:18px;cursor:pointer;transition:all 0.15s;text-align:center;}
+.tf-btn:hover:not(.answered){background:var(--parch);border-color:var(--gold);}
+.tf-btn.correct{background:var(--green-bg);border-color:#b0d880;color:var(--green);}
+.tf-btn.wrong{background:var(--red-bg);border-color:#e8a0a0;color:var(--red);}
+.tf-icon{display:block;font-size:26px;margin-bottom:6px;}
+.tf-label{font-size:14px;font-family:'Karla',sans-serif;}
+
+/* feedback */
+.q-feedback{padding:11px 15px;border-radius:6px;font-size:13px;line-height:1.6;margin-bottom:14px;display:none;font-family:'Karla',sans-serif;}
+.q-feedback.show.correct{display:block;background:var(--green-bg);color:var(--green);border:1px solid #b0d880;}
+.q-feedback.show.wrong{display:block;background:var(--red-bg);color:var(--red);border:1px solid #e8a0a0;}
+
+/* shake animation for wrong */
+@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}
+.shake{animation:shake 0.4s ease;}
+
+/* continue btn */
+.continue-btn{width:100%;padding:13px;background:var(--green2);color:#fff;border:none;border-radius:6px;font-family:'Karla',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;letter-spacing:0.02em;}
+.continue-btn:hover{background:var(--green);}
+
+/* RESULT SCREENS */
+.result-screen{max-width:480px;margin:0 auto;padding:3rem 24px;text-align:center;}
+.result-icon{font-size:48px;margin-bottom:1rem;}
+.result-icon.gold{color:var(--gold);}
+.result-icon.green{color:var(--green2);}
+.result-icon.red{color:var(--red2);}
+.result-title{font-family:'Lora',serif;font-size:26px;font-weight:600;margin-bottom:8px;}
+.result-sub{font-size:13px;color:var(--ink3);margin-bottom:1.5rem;line-height:1.6;font-family:'Karla',sans-serif;}
+.result-stats{display:flex;gap:8px;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap;}
+.rst{text-align:center;padding:14px 20px;background:#fff;border-radius:6px;border:1px solid var(--parch2);}
+.rst .n{font-family:'Lora',serif;font-size:28px;font-weight:600;color:var(--ink);}
+.rst .l{font-size:10px;color:var(--ink3);margin-top:2px;font-family:'Karla',sans-serif;letter-spacing:0.04em;text-transform:uppercase;}
+.result-btns{display:flex;flex-direction:column;gap:8px;max-width:280px;margin:0 auto;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border-radius:6px;border:1px solid var(--parch2);background:#fff;color:var(--ink);font-family:'Karla',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.15s;letter-spacing:0.01em;}
+.btn:hover{background:var(--parch);}
+.btn-primary{background:var(--crimson);color:#fff;border-color:var(--crimson);}
+.btn-primary:hover{background:var(--crimson2);border-color:var(--crimson2);}
+.btn-gold{background:var(--gold2);color:#fff;border-color:var(--gold2);}
+.btn-gold:hover{background:var(--gold);}
+.btn-full{width:100%;padding:13px;font-size:15px;border-radius:6px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:8px 20px;border-radius:4px;font-size:12px;font-family:'Karla',sans-serif;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:200;white-space:nowrap;letter-spacing:0.02em;}
+.toast.show{opacity:1;}
+
+/* XP POP */
+.xp-pop{position:fixed;font-size:14px;font-weight:500;color:var(--gold2);pointer-events:none;z-index:300;opacity:0;font-family:'Lora',serif;}
+@keyframes floatup{0%{opacity:1;transform:translateY(0);}100%{opacity:0;transform:translateY(-50px);}}
+
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div onclick="goHome()" style="cursor:pointer;">
+      <div class="brand">From <em>Age</em> to Age</div>
+      <div class="brand-sub">Church History</div>
+    </div>
+    <div class="xp-wrap">
+      <div class="xp-meta">
+        <span>Level <span id="lvl-num">1</span></span>
+        <span id="xp-next-label">50 XP to next level</span>
+      </div>
+      <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+    </div>
+    <div class="topbar-pills">
+      <div class="pill"><i class="ti ti-flame"></i><span class="streak" id="streak-disp">0</span></div>
+      <div class="pill"><i class="ti ti-star"></i><span id="total-xp-disp">0</span></div>
+    </div>
+  </div>
+
+  <div class="main" id="main-scroll">
+
+    <!-- HOME -->
+    <div class="screen active" id="screen-home">
+      <div class="home-wrap">
+        <div class="home-header">
+          <h1>From <em>Age</em> to Age</h1>
+          <p>Learn the story of the church — from Pentecost to the present — one track at a time.</p>
+        </div>
+        <div class="section-eyebrow">Your tracks</div>
+        <div id="tracks-container"></div>
+      </div>
+    </div>
+
+    <!-- TRACK DETAIL -->
+    <div class="screen" id="screen-track">
+      <div class="detail-wrap">
+        <div class="back-btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> All tracks</div>
+        <div class="detail-header">
+          <div class="detail-eyebrow" id="td-eyebrow"></div>
+          <h2 id="td-title"></h2>
+          <p id="td-desc"></p>
+        </div>
+        <div class="lessons-label">Lessons</div>
+        <div id="lessons-container"></div>
+      </div>
+    </div>
+
+    <!-- ARTICLE -->
+    <div class="screen" id="screen-article">
+      <div class="read-bar"><div class="read-bar-fill" id="read-bar-fill" style="width:0%"></div></div>
+      <div class="article-wrap" id="article-content"></div>
+      <div style="max-width:660px;margin:0 auto;padding:0 24px 36px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:1.5rem;border-top:1px solid var(--bd);">
+          <span style="font-size:13px;color:var(--ink3);" id="art-read-label"></span>
+          <button class="btn btn-primary" onclick="completeArticle()"><i class="ti ti-check"></i> Mark as read</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LESSON (questions) -->
+    <div class="screen" id="screen-lesson">
+      <div class="lesson-wrap" id="lesson-inner"></div>
+    </div>
+
+    <!-- LESSON RESULT -->
+    <div class="screen" id="screen-lesson-result">
+      <div class="lesson-wrap">
+        <div class="result-screen" id="lesson-result-content"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+function loadState(){
+  try{const s=localStorage.getItem('fromagetoage_v1');if(s)return JSON.parse(s);}catch(e){}
+  return{xp:0,level:1,streak:0,lastStudied:null,tracks:{track1:{articleDone:false,lessons:{l1:0,l2:0,l3:0,l4:0}}}};
+}
+let S=loadState();
+function save(){try{localStorage.setItem('fromagetoage_v1',JSON.stringify(S));}catch(e){}}
+function today(){return new Date().toDateString();}
+
+// XP & level
+const XP_THRESHOLDS=[0,50,150,300,500,800,1200,1800,2600,3600];
+function addXP(amt,x,y){
+  S.xp+=amt;
+  for(let i=XP_THRESHOLDS.length-1;i>=0;i--){if(S.xp>=XP_THRESHOLDS[i]){S.level=i+1;break;}}
+  save();
+  updateTopbar();
+  if(x!==undefined)floatXP('+'+amt+' XP',x,y);
+}
+function updateTopbar(){
+  const lv=S.level;
+  const curr=XP_THRESHOLDS[lv-1]||0;
+  const next=XP_THRESHOLDS[lv]||9999;
+  const pct=Math.min(100,Math.round((S.xp-curr)/(next-curr)*100));
+  document.getElementById('lvl-num').textContent=lv;
+  document.getElementById('xp-next-label').textContent=(next-S.xp)+' XP to next level';
+  document.getElementById('xp-fill').style.width=pct+'%';
+  document.getElementById('streak-disp').textContent=S.streak;
+  document.getElementById('total-xp-disp').textContent=S.xp;
+}
+function floatXP(txt,x,y){
+  const el=document.createElement('div');
+  el.className='xp-pop';
+  el.textContent=txt;
+  el.style.left=x+'px';el.style.top=y+'px';
+  document.body.appendChild(el);
+  el.style.animation='floatup 1.2s ease forwards';
+  setTimeout(()=>el.remove(),1300);
+}
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+// ═══════════════════════════════════════════
+// TRACK DATA
+// ═══════════════════════════════════════════
+const TRACKS=[
+  {
+    id:'track1',
+    name:'The Story of the Church',
+    eyebrow:'Track 1 — General Overview',
+    desc:'A sweeping introduction to church history from Pentecost to the present day.',
+    icon:'ti-book-2',
+    pills:['Early Church','Medieval','Reformation','Modern'],
+    lessons:[
+      {id:'l1',name:'The Early Church & Persecution',meta:'8 questions · Centuries 1–3',questions:L1_QUESTIONS()},
+      {id:'l2',name:'Councils & Creeds',meta:'8 questions · 4th–5th century',questions:L2_QUESTIONS()},
+      {id:'l3',name:'Medieval Church & Schism',meta:'8 questions · 6th–15th century',questions:L3_QUESTIONS()},
+      {id:'l4',name:'Reformation & Modern Era',meta:'8 questions · 16th–20th century',questions:L4_QUESTIONS()},
+    ]
+  },
+  {id:'track2',name:'The Reformation Era',eyebrow:'Track 2 — Reformation',desc:'Luther, Calvin, Zwingli, and the fracturing of Western Christianity.',icon:'ti-flame',pills:['Luther','Calvin','Zwingli','Anabaptists'],lessons:[],locked:true},
+  {id:'track3',name:'Patristics',eyebrow:'Track 3 — Church Fathers',desc:'The theologians who shaped Christian doctrine in the first five centuries.',icon:'ti-feather',pills:['Augustine','Origen','Tertullian','Athanasius'],lessons:[],locked:true},
+  {id:'track4',name:'Baptist History',eyebrow:'Track 4 — Baptist Tradition',desc:'From the English Separatists to Spurgeon and the modern Baptist movement.',icon:'ti-droplet',pills:['Separatists','1689 Confession','Spurgeon','Missions'],lessons:[],locked:true},
+];
+
+function L1_QUESTIONS(){return[
+  {type:'mc',era:'Early Church',q:'On what Jewish feast day did the Holy Spirit fall and the church begin?',correct:'Pentecost',wrong:['Passover','Tabernacles','Purim','First Fruits','Day of Atonement','Unleavened Bread','Rosh Hashanah'],explain:'Pentecost — fifty days after Passover — was the day the Spirit fell and Peter preached, with 3,000 baptized.'},
+  {type:'tf',era:'Early Church',q:'The Apostle Paul wrote his letters AFTER the four Gospels were composed.',answer:false,explain:'Paul\'s letters (written in the 50s AD) are actually the oldest surviving Christian documents — the Gospels came later.'},
+  {type:'mc',era:'Early Church',q:'Why did Rome consider Christians politically dangerous?',correct:'They refused to offer incense to the emperor\'s image',wrong:['They held secret underground meetings','They paid no taxes to Rome','They spoke in unknown tongues publicly','They claimed a king higher than Caesar','They refused to serve in the Roman army','They destroyed pagan temples','They banned Roman citizens from their gatherings'],explain:'Refusing to honor the emperor\'s image was read as treason. Christians saw it as idolatry; Rome saw it as civic disloyalty.'},
+  {type:'tf',era:'Early Church',q:'Polycarp of Smyrna was a disciple of the Apostle John.',answer:true,explain:'Polycarp was indeed a disciple of John and served as Bishop of Smyrna until his martyrdom around AD 155 at age 86.'},
+  {type:'mc',era:'Early Church',q:'Tertullian of Carthage is credited with coining which Latin theological term?',correct:'Trinitas',wrong:['Ecclesia','Salvatio','Gratia','Incarnatio','Peccatum','Fides','Sola'],explain:'Tertullian coined "Trinitas" (Trinity) and the formula "one substance, three persons" — foundational to all Western theology.'},
+  {type:'mc',era:'Early Church',q:'Which emperor issued the Edict of Milan (313 AD) that legalized Christianity?',correct:'Constantine',wrong:['Nero','Diocletian','Theodosius','Trajan','Marcus Aurelius','Hadrian','Commodus'],explain:'Constantine issued the Edict of Milan in 313, ending persecution and beginning Christianity\'s transformation into an imperial religion.'},
+  {type:'tf',era:'Early Church',q:'The Neronian persecution began because Nero blamed Christians for the Great Fire of Rome.',answer:true,explain:'In 64 AD, Nero used Christians as scapegoats for the Great Fire, executing them with theatrical cruelty — burned, crucified, thrown to beasts.'},
+  {type:'mc',era:'Early Church',q:'What did Ignatius of Antioch write while being transported to Rome for execution?',correct:'Seven letters to churches',wrong:['A commentary on the Psalms','The first Christian creed','A defense of Christianity to Emperor Trajan','A history of the apostles','A manual on church discipline','A theological treatise on baptism','A letter to the Bishop of Rome alone'],explain:'Ignatius wrote seven letters to churches along his route to martyrdom — some of the earliest evidence of episcopal church structure.'},
+  {type:'mc',era:'Early Church',q:'Approximately how many people were baptized after Peter\'s sermon on the day of Pentecost?',correct:'Three thousand',wrong:['Five hundred','One thousand','Five thousand','Ten thousand','Two hundred','Seventy','Twelve hundred'],explain:'Acts 2:41 records that about three thousand people were added to the church that day after Peter\'s Pentecost sermon.'},
+  {type:'tf',era:'Early Church',q:'The early church thinkers known as "Apologists" argued that Christianity was philosophically serious and Christians were loyal citizens.',answer:true,explain:'Justin Martyr, Tertullian, Origen and others wrote sophisticated defenses to Roman emperors and intellectuals making exactly these arguments.'},
+  {type:'mc',era:'Early Church',q:'What was Tertullian\'s famous claim about the relationship between martyrdom and church growth?',correct:'The blood of the martyrs is the seed of the church',wrong:['The church grows stronger through suffering alone','Martyrs unlock the gates of heaven for all believers','Death in Christ is the highest form of baptism','The empire cannot outlast the church it persecutes','Rome will fall before the church does','Persecution purifies the church of false believers','Every martyr produces a hundred new converts'],explain:'Tertullian\'s famous line summarized how persecution paradoxically expanded Christianity rather than destroying it.'},
+  {type:'mc',era:'Early Church',q:'Paul\'s letters are significant in church history because they are:',correct:'The oldest surviving Christian documents, predating the Gospels',wrong:['The first writings to mention Jesus by name','Written after the Council of Jerusalem settled all disputes','The only source we have for Paul\'s theology','Written in Hebrew and later translated to Greek','Composed collectively by a group of apostles','The first documents to use the word "Christian"','Dictated by Peter and attributed to Paul'],explain:'Paul\'s letters, written in the 50s AD, predate the Gospels — making them the earliest surviving Christian writings we have.'},
+  {type:'tf',era:'Early Church',q:'Christians were accused by Romans of cannibalism, partly due to misunderstandings about the Eucharist.',answer:true,explain:'Rumors about eating flesh and drinking blood at secret gatherings led some Romans to accuse Christians of cannibalism — a serious misreading of Eucharistic language.'},
+  {type:'mc',era:'Early Church',q:'Where did the church first begin, according to the book of Acts?',correct:'Jerusalem',wrong:['Antioch','Rome','Ephesus','Corinth','Bethlehem','Alexandria','Athens'],explain:'The church was born in Jerusalem on the day of Pentecost, though it spread quickly — Antioch later became the first great Gentile center.'},
+  {type:'tf',era:'Early Church',q:'The Apostle John was martyred by beheading in Rome, like Peter and Paul.',answer:false,explain:'John is the only apostle traditionally believed to have died of old age, not martyrdom — exiled to Patmos under Domitian, where he wrote Revelation.'},
+  {type:'mc',era:'Early Church',q:'Which Roman emperor first made Christianity the official state religion of the Roman Empire?',correct:'Theodosius I',wrong:['Constantine','Nero','Julian','Diocletian','Hadrian','Augustus','Valerian'],explain:'While Constantine legalized Christianity in 313, it was Theodosius I who made it the official state religion in 380 AD with the Edict of Thessalonica.'},
+]}
+
+function L2_QUESTIONS(){return[
+  {type:'mc',era:'Councils',q:'What was the central claim of Arius that the Council of Nicaea condemned?',correct:'The Son was a created being and not eternal',wrong:['The Holy Spirit does not proceed from the Father','Christ had no true human nature','Baptism is unnecessary for salvation','Mary should not be called the Mother of God','The Bible alone is sufficient for salvation','There is no resurrection of the body','The church has no authority to define doctrine'],explain:'Arius taught "there was a time when he was not" — the Son was a created being. Nicaea condemned this and affirmed the Son is homoousios with the Father.'},
+  {type:'tf',era:'Councils',q:'The word "homoousios" means "of similar substance," implying the Son is like but not identical to the Father.',answer:false,explain:'Homoousios means "of one substance" — identical, not merely similar. The "similar" word was homoiousios, differing by a single Greek letter (iota).'},
+  {type:'mc',era:'Councils',q:'Roughly how many bishops attended the First Council of Nicaea in 325 AD?',correct:'About 300',wrong:['About 50','About 1,000','All 1,800 bishops in the empire','About 12','About 700','About 2,000','About 100'],explain:'About 300 bishops attended — mostly Eastern. Of roughly 1,800 bishops in the empire, the Western church sent only two presbyters as delegates.'},
+  {type:'tf',era:'Councils',q:'The Council of Constantinople (381) completed the Nicene Creed as we know it today.',answer:true,explain:'While drafted at Nicaea (325), the creed was finalized at Constantinople (381) — adding the full affirmation of the Holy Spirit\'s divinity.'},
+  {type:'mc',era:'Councils',q:'The Council of Chalcedon (451) defined that Christ has:',correct:'Two complete natures — divine and human — in one person',wrong:['One divine nature only, with no true humanity','A single nature blending divine and human','Two separate persons united in purpose','A human body with a divine soul only','Three natures reflecting the Trinity','One person with alternating natures','A divine nature that absorbed his humanity'],explain:'Chalcedon defined the "hypostatic union" — Christ is fully divine and fully human, two complete natures in one person without mixture or confusion.'},
+  {type:'mc',era:'Patristics',q:'Which church father wrote "Our heart is restless until it rests in Thee"?',correct:'Augustine of Hippo',wrong:['Origen of Alexandria','Jerome of Bethlehem','Ambrose of Milan','John Chrysostom','Basil of Caesarea','Gregory of Nazianzus','Tertullian of Carthage'],explain:'Augustine wrote this in the opening of his Confessions (c. 400 AD) — one of the most quoted lines in all of Christian literature.'},
+  {type:'tf',era:'Patristics',q:'Athanasius was exiled from Alexandria multiple times for defending Nicene orthodoxy.',answer:true,explain:'Athanasius was exiled five times — hence "Athanasius contra mundum" (Athanasius against the world). He outlasted every emperor who opposed him.'},
+  {type:'mc',era:'Patristics',q:'The three Cappadocian Fathers who shaped Trinitarian theology were:',correct:'Basil of Caesarea, Gregory of Nyssa, and Gregory of Nazianzus',wrong:['Augustine, Jerome, and Ambrose','Origen, Clement, and Tertullian','Polycarp, Ignatius, and Irenaeus','John Chrysostom, Cyril, and Athanasius','Justin Martyr, Tertullian, and Origen','Anselm, Aquinas, and Bonaventure','Peter, James, and John'],explain:'The Cappadocians formalized "one ousia, three hypostaseis" — one substance, three persons — the grammar of Trinitarian orthodoxy.'},
+  {type:'mc',era:'Councils',q:'Who convened the First Council of Nicaea, and why?',correct:'Emperor Constantine, to resolve the Arian controversy',wrong:['Pope Sylvester I, to define the biblical canon','Bishop Alexander of Alexandria, to condemn Gnosticism','Emperor Diocletian, to organize the church','The Apostle Peter\'s successor, to unify the East and West','Emperor Theodosius, to enforce Christian worship','The Bishop of Antioch, to address baptism disputes','Emperor Trajan, to distinguish Christianity from Judaism'],explain:'Constantine convened Nicaea in 325 primarily to resolve the crisis caused by Arius\'s teaching — a theological dispute threatening imperial unity.'},
+  {type:'tf',era:'Patristics',q:'The phrase "Athanasius contra mundum" means "Athanasius against the world."',answer:true,explain:'The Latin phrase captures Athanasius\'s willingness to stand alone against emperors, majorities, and councils in defense of Nicene orthodoxy.'},
+  {type:'mc',era:'Councils',q:'What does the Greek term "hypostasis" mean in Trinitarian theology?',correct:'Person or individual subsistence',wrong:['Substance or essence shared by the Trinity','The divine will of God','A union of two natures','The eternal generation of the Son','God\'s incomprehensible nature','The relationship between Father and Spirit','The divine energy emanating from God'],explain:'Hypostasis (person/individual subsistence) was the Cappadocians\' key term: the Trinity is one ousia (substance) in three hypostaseis (persons).'},
+  {type:'tf',era:'Councils',q:'The Council of Ephesus (431) declared Mary to be the "Mother of God" (Theotokos) primarily to honor Mary herself.',answer:false,explain:'Theotokos was affirmed to protect Christology, not to honor Mary per se — if Christ is truly God, then his mother bore God. It was an argument about who Jesus is, not who Mary is.'},
+  {type:'mc',era:'Patristics',q:'What major work did Augustine write responding to the fall of Rome in 410 AD?',correct:'The City of God',wrong:['The Confessions','On the Trinity','Against Faustus','The Enchiridion','On Christian Doctrine','On Free Will','Against Julian'],explain:'Augustine wrote The City of God (413–426) to address pagans who blamed Christianity for Rome\'s fall, arguing history moves toward the heavenly city, not earthly empire.'},
+  {type:'tf',era:'Councils',q:'Arius\'s slogan was "There was a time when the Son was not."',answer:true,explain:'This phrase — asserting the Son had a beginning and was therefore not eternal — was the heart of Arianism and the target of the Nicene homoousios formula.'},
+  {type:'mc',era:'Patristics',q:'Which church father is often called the "father of Latin theology" for writing the first major theology in Latin?',correct:'Tertullian',wrong:['Augustine','Ambrose','Jerome','Cyprian','Lactantius','Hilary of Poitiers','Leo the Great'],explain:'Tertullian of Carthage was the first major Christian theologian to write primarily in Latin, coining terms that shaped Western theology for centuries.'},
+  {type:'mc',era:'Councils',q:'Which council dealt with the Nestorian controversy, condemning the view that Christ\'s two natures implied two persons?',correct:'Council of Ephesus (431)',wrong:['Council of Nicaea (325)','Council of Constantinople (381)','Council of Chalcedon (451)','Council of Trent (1545)','Council of Carthage (397)','Lateran Council (1215)','Council of Constance (1415)'],explain:'Ephesus (431) condemned Nestorius, who seemed to divide Christ into two persons. The council affirmed Mary as Theotokos as a corollary of Christ\'s unified personhood.'},
+]}
+
+function L3_QUESTIONS(){return[
+  {type:'mc',era:'Medieval',q:'What were the two main causes of the Great Schism of 1054?',correct:'Disputes over papal authority and the filioque clause',wrong:['A disagreement over the date of Easter and the language of worship','A controversy over icons and priestly celibacy','A dispute over the biblical canon and baptism by immersion','A conflict over monastic rules and the veneration of saints','A political rivalry between the Pope and the Patriarch of Antioch','Disagreement over the nature of purgatory and indulgences','A conflict over which language the Bible should be read in'],explain:'The East-West Schism split Roman Catholicism from Eastern Orthodoxy primarily over papal claims to universal authority and Rome\'s unilateral addition of "filioque" to the Nicene Creed.'},
+  {type:'tf',era:'Medieval',q:'The word "filioque" means "and the Son" — added by Rome to say the Spirit proceeds from both Father and Son.',answer:true,explain:'Correct. Rome added "filioque" to the Nicene Creed. The East rejected this as theologically wrong and procedurally illegitimate — Rome had no right to alter the creed unilaterally.'},
+  {type:'mc',era:'Medieval',q:'What was the "Babylonian Captivity" of the papacy (1309–1377)?',correct:'Seven successive French popes residing in Avignon under French royal influence',wrong:['The pope\'s imprisonment by the Holy Roman Emperor','Crusaders capturing and sacking Rome','A period when the papacy was controlled by the Byzantine Emperor','The forced conversion of popes to Islam','A rival antipope ruling from Babylon in Mesopotamia','The Pope\'s exile to Constantinople after Rome was sacked','A period when the papacy moved to Jerusalem during the Crusades'],explain:'From 1309–1377, seven successive French popes resided in Avignon under heavy French royal influence rather than Rome — severely damaging papal prestige and independence.'},
+  {type:'tf',era:'Medieval',q:'Thomas Aquinas completed his Summa Theologica before his death.',answer:false,explain:'Aquinas left the Summa unfinished. After a mystical experience in 1273, he called everything he\'d written "straw" and never wrote again. He died in 1274.'},
+  {type:'mc',era:'Medieval',q:'Anselm of Canterbury\'s satisfaction theory of atonement argued that:',correct:'Christ\'s death was necessary to satisfy God\'s offended honor',wrong:['Christ\'s death was a moral example to inspire humanity','Christ paid a ransom to the devil to free captive souls','God simply chose to forgive sin without requiring anything','The church mediates Christ\'s satisfaction through sacraments','Christ defeated death through his resurrection alone','Atonement is achieved through the believer\'s suffering','The Virgin Mary\'s intercession makes Christ\'s death effective'],explain:'Anselm\'s Cur Deus Homo argued that sin offended God\'s infinite honor, requiring infinite satisfaction — only a God-man could provide it.'},
+  {type:'mc',era:'Medieval',q:'What happened to Jan Hus at the Council of Constance in 1415?',correct:'He was burned at the stake despite a promise of safe conduct',wrong:['He recanted his views and was reinstated as a bishop','He escaped execution and fled to Bohemia','He was imprisoned for life in a monastery','He was excommunicated but allowed to return home','He was beheaded by order of the Holy Roman Emperor','He was exiled to England where he continued writing','He died of illness while awaiting trial'],explain:'Jan Hus, influenced by Wycliffe, was condemned and burned at Constance despite a promise of safe conduct — an act of treachery that enraged Bohemia and sparked the Hussite Wars.'},
+  {type:'tf',era:'Medieval',q:'John Wycliffe was burned at the stake for translating the Bible into English.',answer:false,explain:'Wycliffe (d. 1384) died of natural causes. He was condemned posthumously — his bones were later exhumed and burned. It was Jan Hus, not Wycliffe, who was burned alive.'},
+  {type:'mc',era:'Medieval',q:'Pope Urban II called the First Crusade in 1095. What was the primary stated goal?',correct:'To reclaim Jerusalem from Muslim rule',wrong:['To conquer Constantinople and reunite the church','To destroy the Byzantine Empire\'s independence','To punish Eastern Orthodoxy for the 1054 Schism','To establish a permanent papal state in the Holy Land','To liberate Christian pilgrims captured by the Mongols','To spread Christianity to sub-Saharan Africa','To break the Islamic trade monopoly on the Silk Road'],explain:'Urban II called for the liberation of Jerusalem and the Holy Land from Seljuk Turkish rule, promising spiritual rewards. Jerusalem was captured in 1099.'},
+  {type:'mc',era:'Medieval',q:'Benedict of Nursia is significant in church history because he:',correct:'Founded Monte Cassino and wrote the Rule that shaped Western monasticism',wrong:['Led the First Crusade and captured Jerusalem','Translated the Bible into Latin (the Vulgate)','Served as the first Bishop of Rome after Peter','Convened the Council of Nicaea on Constantine\'s behalf','Wrote the Summa Theologica synthesizing faith and reason','Converted the Anglo-Saxons to Christianity','Founded the Franciscan order of friars'],explain:'Benedict founded Monte Cassino in 529 and wrote his Rule, which became the foundation of Western monasticism for over a thousand years.'},
+  {type:'tf',era:'Medieval',q:'Charlemagne was crowned Holy Roman Emperor by Pope Leo III on Christmas Day, 800 AD.',answer:true,explain:'Correct. This coronation established the pattern of entangled papal and imperial authority that would define medieval Europe — and cause endless conflict between popes and kings.'},
+  {type:'mc',era:'Medieval',q:'Thomas Aquinas\'s major intellectual achievement was:',correct:'Synthesizing Aristotelian philosophy with Christian theology in the Summa Theologica',wrong:['Translating the Bible into Italian from the original Greek','Writing the first systematic history of the church','Developing the satisfaction theory of the atonement','Reforming the monastic system across Western Europe','Defeating Arianism at the Council of Nicaea','Writing the first commentary on the book of Revelation','Establishing the Dominican order of preachers'],explain:'Aquinas\'s Summa Theologica (1265–1274) was a monumental synthesis of Aristotelian philosophy and Christian theology — over 1.5 million words.'},
+  {type:'tf',era:'Medieval',q:'The Great Schism of 1054 has been fully healed, with Rome and Constantinople reuniting in the 20th century.',answer:false,explain:'The East-West Schism has never been officially healed. Roman Catholics and Eastern Orthodox remain separate communions, though there have been gestures of reconciliation, including the lifting of mutual excommunications in 1964.'},
+  {type:'mc',era:'Medieval',q:'John Wycliffe is historically significant because he:',correct:'Translated the Bible into English and challenged papal authority, influencing later reformers',wrong:['Led the Peasants\' Revolt against the English king','Founded the Franciscan order with a commitment to poverty','Wrote the first systematic theology of the medieval era','Served as Archbishop of Canterbury under Henry II','Preached the First Crusade across Western Europe','Established Oxford University as a center of theology','Converted the Vikings to Christianity'],explain:'Wycliffe (c. 1320–1384) translated the Bible into English and attacked indulgences and papal power — directly influencing Jan Hus and, through him, the Reformation.'},
+  {type:'tf',era:'Medieval',q:'Medieval monasteries played a significant role in preserving literacy and ancient texts during the collapse of the Roman Empire.',answer:true,explain:'Monasteries were the primary centers of literacy, manuscript copying, education, and healthcare in early medieval Europe — preserving classical and biblical texts that might otherwise have been lost.'},
+  {type:'mc',era:'Medieval',q:'What was the Fourth Lateran Council of 1215 most famous for defining?',correct:'Transubstantiation — the doctrine that the bread and wine become the body and blood of Christ',wrong:['The authority of the pope over all secular rulers','The number of books in the biblical canon','The procedure for electing a new pope','The proper form of baptism by immersion','The condemnation of the Crusades as unjust wars','The reunification of Eastern and Western Christianity','The founding of the Franciscan and Dominican orders'],explain:'Lateran IV officially defined transubstantiation as doctrine and mandated annual confession and communion for all Catholics — among its many sweeping reforms.'},
+  {type:'mc',era:'Medieval',q:'Which of the following best describes the relationship between popes and kings in the medieval period?',correct:'A recurring power struggle over who held ultimate authority — spiritual or temporal',wrong:['A peaceful partnership where popes handled religion and kings handled politics','Popes always had final authority over kings without exception','Kings always held final authority and the church served the state','A separation of church and state as understood in modern democracies','Popes and kings jointly elected each other in a shared council','The church was subordinate to the Holy Roman Emperor at all times','Kings held ecclesiastical appointments while popes held political ones'],explain:'The medieval period was defined by recurring conflict between papal and royal authority — over appointments, taxation, war, and excommunication — with power shifting constantly.'},
+]}
+
+function L4_QUESTIONS(){return[
+  {type:'mc',era:'Reformation',q:'What did Martin Luther publish on October 31, 1517?',correct:'His 95 Theses challenging the sale of indulgences',wrong:['A German translation of the New Testament','A declaration of independence from the papacy','The Augsburg Confession of Protestant faith','A commentary on Paul\'s letter to the Romans','The Heidelberg Catechism','A letter to the Emperor calling for church reform','The Schleitheim Confession of the Anabaptists'],explain:'Luther\'s 95 Theses challenged indulgences — the Reformation\'s igniting spark. The printing press spread them across Europe within weeks.'},
+  {type:'tf',era:'Reformation',q:'John Calvin wrote the first edition of his Institutes of the Christian Religion at age 26.',answer:true,explain:'Calvin published the Institutes in 1536 at just 26 — in Latin. He revised it until 1559, expanding from 6 to 80 chapters over 23 years.'},
+  {type:'mc',era:'Reformation',q:'What does "Sola Scriptura" mean?',correct:'By Scripture alone — the Bible as the supreme authority for doctrine',wrong:['By grace alone — salvation is entirely God\'s gift','By faith alone — justification through faith, not works','By Christ alone — no mediator but Jesus','By God\'s glory alone — all things done for God\'s honor','By reason alone — theology must be rationally defensible','By tradition alone — the church interprets all truth','By the pope alone — the magisterium defines doctrine'],explain:'"Sola Scriptura" was the Reformation\'s formal principle: the Bible, not tradition or the pope, is the supreme authority for doctrine and practice.'},
+  {type:'mc',era:'Reformation',q:'What did the Council of Trent (1545–1563) affirm in response to the Reformation?',correct:'That tradition stands alongside Scripture as equally authoritative',wrong:['That Scripture alone is the basis for all Christian doctrine','That Luther\'s doctrine of justification by faith alone was correct','That the pope has no authority over church councils','That indulgences should be abolished completely','That Mass should be celebrated in local languages','That clergy should be permitted to marry','That the Augsburg Confession represented acceptable doctrine'],explain:'Trent reaffirmed tradition alongside Scripture, works alongside faith, and seven sacraments — hardening the divide between Rome and Protestants for centuries.'},
+  {type:'tf',era:'Reformation',q:'William Tyndale\'s last reported words were "Lord, open the King of England\'s eyes" before his execution.',answer:true,explain:'Tyndale was strangled and burned in 1536. Within two years, Henry VIII authorized an English Bible built largely on Tyndale\'s own translation — a profound historical irony.'},
+  {type:'mc',era:'Modern',q:'What did Benjamin Franklin estimate about Whitefield\'s preaching voice?',correct:'That at least 30,000 people could hear him clearly in the open air',wrong:['That it could fill the largest cathedral in London','That it carried distinctly for half a mile in any direction','That it was the most powerful voice he had ever heard','That it could be heard across the Thames River','That 5,000 people could hear him without strain','That it rivaled the sound of a cannon at 100 yards','That it was louder than any instrument he had measured'],explain:'Franklin, a skeptic, attended a Whitefield sermon and calculated by geometry and acoustics that at least 30,000 people could hear him clearly — without any amplification.'},
+  {type:'tf',era:'Modern',q:'The Edinburgh Missionary Conference of 1910 is considered the birth of the modern ecumenical movement.',answer:true,explain:'Over 1,200 Protestant delegates gathered in Edinburgh — though no Catholic or Orthodox churches were invited. It launched the trajectory toward the World Council of Churches.'},
+  {type:'mc',era:'Modern',q:'What significant change did Vatican II (1962–65) make to Catholic worship?',correct:'Mass could now be celebrated in local languages instead of Latin',wrong:['The papacy was made subject to approval by bishops','The church formally reunited with Eastern Orthodoxy','The doctrine of papal infallibility was abolished','Priests were permitted to marry with church approval','The veneration of Mary and saints was discontinued','The church endorsed the Protestant doctrine of sola fide','Confession was made optional for practicing Catholics'],explain:'Vatican II permitted Mass in vernacular languages, opened dialogue with Protestants and Jews, and affirmed religious liberty — the most significant Catholic reform in centuries.'},
+  {type:'mc',era:'Reformation',q:'Martin Luther was declared an outlaw at which famous gathering in 1521?',correct:'The Diet of Worms',wrong:['The Council of Trent','The Peace of Augsburg','The Council of Constance','The Heidelberg Disputation','The Leipzig Debate','The Marburg Colloquy','The Diet of Speyer'],explain:'At the Diet of Worms, Luther refused to recant before Emperor Charles V. His famous words: "Here I stand; I can do no other." He was declared an outlaw of the empire.'},
+  {type:'tf',era:'Reformation',q:'The Anabaptists were persecuted by both Catholics and fellow Protestants during the Reformation.',answer:true,explain:'The Anabaptists — who rejected infant baptism and demanded strict church-state separation — were viewed as dangerous radicals by both Rome and the magisterial Reformers like Luther and Zwingli.'},
+  {type:'mc',era:'Modern',q:'William Carey is significant in church history because he:',correct:'Pioneered the modern Protestant missions movement by sailing to India in 1793',wrong:['Led the First Great Awakening in England alongside Whitefield','Wrote the Westminster Confession of Faith','Founded the Baptist Union of Great Britain','Translated the King James Bible into modern English','Preached the largest recorded open-air sermon in history','Founded the London Missionary Society with John Wesley','Established the first Baptist church in America'],explain:'Carey, a Baptist cobbler, sailed to India in 1793 and spent 41 years translating Scripture into dozens of languages — establishing the pattern for Protestant foreign missions.'},
+  {type:'mc',era:'Reformation',q:'What was John Calvin\'s primary contribution to the Reformation?',correct:'A systematic Reformed theology emphasizing divine sovereignty, predestination, and covenant',wrong:['Translating the Bible into German for the common people','Organizing the Peasants\' War against Catholic landlords','Leading the reform of the Church of England under Henry VIII','Writing the 95 Theses that ignited the Reformation','Founding the Anabaptist movement rejecting infant baptism','Negotiating the Peace of Augsburg between Catholics and Lutherans','Establishing the first Protestant seminary at Wittenberg'],explain:'Calvin\'s Institutes gave Reformed theology its systematic foundation — shaping Presbyterians, Congregationalists, and Baptists for centuries.'},
+  {type:'tf',era:'Modern',q:'Charles Spurgeon preached to an estimated 10 million people in his lifetime using early radio broadcasts.',answer:false,explain:'Spurgeon (1834–1892) died before radio existed. He preached to an estimated 10 million people entirely without amplification — drawing 6,000 to London\'s Metropolitan Tabernacle each Sunday.'},
+  {type:'mc',era:'Modern',q:'John Wesley\'s Methodism was significant in the 18th century because it:',correct:'Became a mass movement transforming English working-class life through revival preaching',wrong:['Formally separated from the Church of England to become a new denomination','Rejected the doctrine of the Trinity in favor of Unitarian beliefs','Spread primarily among the aristocracy and educated classes','Focused exclusively on foreign missions rather than domestic renewal','Established the first Sunday schools as a means of evangelism','United with the Calvinist wing of the Reformation to form one body','Introduced the practice of infant baptism to Protestants for the first time'],explain:'Wesley\'s open-air preaching and organizational genius transformed English working-class life — though Wesley himself never formally left the Church of England.'},
+  {type:'tf',era:'Reformation',q:'The Westminster Confession of Faith (1647) remains the doctrinal standard for many Presbyterian churches worldwide today.',answer:true,explain:'Produced by the Westminster Assembly (1643–1649), the Confession remains the primary doctrinal standard for Presbyterian and many Reformed churches globally.'},
+  {type:'mc',era:'Modern',q:'Where is the center of gravity of global Christianity shifting in the 21st century?',correct:'Sub-Saharan Africa, Latin America, and South Korea',wrong:['Western Europe and North America','Russia and Eastern Europe','The Middle East and North Africa','China and Japan','Australia and New Zealand','Central Asia and India','Scandinavia and the British Isles'],explain:'Christianity\'s most vibrant growth is now in the Global South — sub-Saharan Africa, Latin America, and South Korea — not in the declining churches of Western Europe where the story began.'},
+]}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+let currentTrack=null;
+let currentLessonIdx=null;
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  document.getElementById('main-scroll').scrollTop=0;
+}
+
+function goHome(){
+  renderHome();
+  showScreen('home');
+}
+
+function goTrack(){
+  renderTrackDetail(currentTrack);
+  showScreen('track');
+}
+
+// ═══════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════
+function renderHome(){
+  const c=document.getElementById('tracks-container');
+  c.innerHTML='';
+  TRACKS.forEach(tr=>{
+    const ts=S.tracks[tr.id]||{articleDone:false,lessons:{}};
+    const totalLessons=tr.lessons.length;
+    const doneLessons=totalLessons===0?0:tr.lessons.filter(l=>(ts.lessons[l.id]||0)>=1).length;
+    const articleDone=ts.articleDone||false;
+    const steps=totalLessons+1;
+    const doneSteps=(articleDone?1:0)+doneLessons;
+    const pct=steps===0?0:Math.round(doneSteps/steps*100);
+    const isLocked=tr.locked||false;
+    const isComplete=!isLocked&&pct===100;
+    let badgeCls='badge-new',badgeTxt='New';
+    if(isLocked){badgeCls='badge-locked';badgeTxt='Locked';}
+    else if(isComplete){badgeCls='badge-done';badgeTxt='Complete';}
+    else if(doneSteps>0){badgeCls='badge-progress';badgeTxt=doneSteps+'/'+steps+' done';}
+    const div=document.createElement('div');
+    div.className='track-card'+(isLocked?' locked':'');
+    div.innerHTML=`
+      <div class="tc-body">
+        <div class="tc-icon${isComplete?' complete':''}"><i class="ti ${isComplete?'ti-check':tr.icon}"></i></div>
+        <div class="tc-text">
+          <div class="tc-name">${tr.name}</div>
+          <div class="tc-desc">${tr.desc}</div>
+          <div class="tc-pills">${tr.pills.map(p=>`<span class="tc-pill">${p}</span>`).join('')}</div>
+        </div>
+      </div>
+      <div class="tc-footer">
+        <span>${tr.eyebrow}</span>
+        <div class="tc-progress-track"><div class="tc-progress-fill${isComplete?' done':''}" style="width:${pct}%"></div></div>
+        <span class="tc-badge ${badgeCls}">${badgeTxt}</span>
+      </div>`;
+    if(!isLocked) div.onclick=()=>{currentTrack=tr;renderTrackDetail(tr);showScreen('track');};
+    c.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════
+// TRACK DETAIL
+// ═══════════════════════════════════════════
+function renderTrackDetail(tr){
+  document.getElementById('td-eyebrow').textContent=tr.eyebrow;
+  document.getElementById('td-title').textContent=tr.name;
+  document.getElementById('td-desc').textContent=tr.desc;
+  const ts=S.tracks[tr.id]||{articleDone:false,lessons:{}};
+  const c=document.getElementById('lessons-container');
+  c.innerHTML='';
+
+  // Intro article row
+  const articleDone=ts.articleDone||false;
+  const artDiv=document.createElement('div');
+  artDiv.className='lesson-row'+(articleDone?' complete':'');
+  artDiv.innerHTML=`
+    <div class="lesson-num${articleDone?' complete':''}"><i class="ti ${articleDone?'ti-check':'ti-book-2'}" style="font-size:16px;"></i></div>
+    <div class="lesson-info">
+      <div class="lesson-name">Introduction — The Full Story</div>
+      <div class="lesson-meta">~10 min read · Required to unlock lessons</div>
+    </div>
+    <div class="lesson-right">
+      <span style="font-size:12px;color:${articleDone?'var(--green2)':'var(--gold)'};">${articleDone?'Read':'Read first'}</span>
+      <i class="ti ti-chevron-right" style="font-size:16px;color:var(--ink3);"></i>
+    </div>`;
+  artDiv.onclick=()=>openArticle(tr);
+  c.appendChild(artDiv);
+
+  // Lesson rows
+  tr.lessons.forEach((les,i)=>{
+    const stars=ts.lessons[les.id]||0;
+    const prevDone=i===0?articleDone:(ts.lessons[tr.lessons[i-1].id]||0)>=1;
+    const isLocked=!prevDone;
+    const isComplete=stars>=1;
+    const isActive=!isLocked&&!isComplete;
+    const div=document.createElement('div');
+    div.className='lesson-row'+(isLocked?' locked':'')+(isComplete?' complete':'');
+    const numCls=isComplete?'complete':isActive?'active':'';
+    const starsHtml=[1,2,3].map(n=>`<i class="ti ti-star lesson-star${stars>=n?' lit':''}"></i>`).join('');
+    div.innerHTML=`
+      <div class="lesson-num ${numCls}">${isComplete?'<i class="ti ti-check" style="font-size:14px;"></i>':isLocked?'<i class="ti ti-lock" style="font-size:14px;"></i>':(i+1)}</div>
+      <div class="lesson-info">
+        <div class="lesson-name">${les.name}</div>
+        <div class="lesson-meta">${les.meta}</div>
+      </div>
+      <div class="lesson-right">
+        <div class="lesson-stars">${starsHtml}</div>
+        <i class="ti ti-chevron-right" style="font-size:16px;color:var(--ink3);"></i>
+      </div>`;
+    if(!isLocked) div.onclick=()=>startLesson(tr,i);
+    c.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════
+// ARTICLE HTML
+// Images use data-wiki="Page_Title" — resolved at runtime via Wikipedia REST API
+// Paul's journey uses a Leaflet map rendered after article is injected
+// ═══════════════════════════════════════════
+
+const ARTICLE_HTML=`
+<div class="article-eyebrow">
+  <span class="art-tag">Track 1 — General Overview</span>
+  <span class="art-time"><i class="ti ti-clock"></i> ~10 min read</span>
+</div>
+<h1 class="article-title">The Story of the Church</h1>
+<p class="article-sub">From a borrowed upper room in Jerusalem to two billion people on every continent — the most consequential story in Western civilization.</p>
+<div class="art-divider"></div>
+<div class="article-body">
+
+<h3>I. Beginnings: The First Century (c. AD 30–100)</h3>
+<p>The church was born not in a cathedral but in a crowd. Fifty days after the resurrection of Jesus of Nazareth, his disciples gathered in Jerusalem for the Jewish feast of <strong>Pentecost</strong>. The Holy Spirit fell on them, and the fisherman Peter stood up and preached to pilgrims from across the known world. Three thousand were baptized that day. That is where the story begins.</p>
+<p>What happened next was remarkable in its speed. Within two decades, communities of believers existed in Jerusalem, Antioch, Corinth, Ephesus, and Rome itself — the very capital of the empire that would later persecute them. The Apostle <strong>Paul</strong> drove much of this expansion, planting churches and writing letters that would eventually become half the New Testament. His letters, written in the 50s AD, are the oldest surviving Christian documents — older than the Gospels themselves.</p>
+
+<figure style="margin:1.75rem 0;border:1px solid var(--parch2);border-radius:8px;overflow:hidden;">
+  <img src="https://cdn.jsdelivr.net/gh/daltonp-1689/from_age_to_age@main/images/paul-journeys.png"
+       style="width:100%;display:block;object-fit:contain;max-height:420px;background:var(--parch);">
+  <figcaption style="padding:10px 16px;font-size:11px;color:var(--ink3);font-family:'Karla',sans-serif;border-top:1px solid var(--parch2);background:#fff;line-height:1.6;">
+    <strong>Paul's missionary journeys across the Roman world.</strong> Between roughly AD 46 and 60, Paul traveled thousands of miles by ship and on foot — planting churches from Antioch to Rome. Red: 1st journey · Blue: 2nd journey · Green: 3rd journey · Purple: journey to Rome.
+  </figcaption>
+</figure>
+
+<p>The first Christians expected Jesus to return quickly. When he did not, hard questions emerged: How do we organize? What do we believe? Which writings are authoritative? These questions would define the next three centuries.</p>
+
+<div class="atl-box">
+  <div class="atl-label">Key dates — First century</div>
+  <div class="atl-row"><div class="atl-year">c. 30</div><div class="atl-text">Pentecost — the church begins in Jerusalem</div></div>
+  <div class="atl-row"><div class="atl-year">c. 48</div><div class="atl-text">Paul's first missionary journey; Council of Jerusalem</div></div>
+  <div class="atl-row"><div class="atl-year">64–68</div><div class="atl-text">Neronian persecution; Peter and Paul martyred in Rome</div></div>
+  <div class="atl-row"><div class="atl-year">70</div><div class="atl-text">Romans destroy Jerusalem and the Temple</div></div>
+  <div class="atl-row"><div class="atl-year">c. 95</div><div class="atl-text">Domitian persecution; John writes Revelation from Patmos</div></div>
+</div>
+
+<h3>II. Persecution and Apology (100–313)</h3>
+<p>For the first three centuries, to be Christian was to risk your life. Rome tolerated many religions, but Christians refused to offer incense to the emperor's image — a gesture Rome understood as civic loyalty, not religious devotion. This refusal was read as treason. Christians were accused of atheism, cannibalism, and political sedition.</p>
+<p>The persecutions were sporadic, varying by region and emperor. Under <strong>Nero</strong> (64 AD), Christians were blamed for the Great Fire of Rome and executed with theatrical cruelty. <strong>Ignatius of Antioch</strong> wrote seven letters to churches while being transported to Rome for execution. <strong>Polycarp of Smyrna</strong> — a disciple of the Apostle John — refused at eighty-six to curse Christ before the magistrate.</p>
+
+<div class="pull-quote"><p>"Eighty-six years I have served him, and he has done me no wrong. How can I blaspheme my King who saved me?"</p><cite>— Polycarp of Smyrna, before his martyrdom, c. AD 155</cite></div>
+
+<!-- Polycarp -->
+<figure class="art-fig portrait">
+  <div class="fig-img-wrap"><img src="https://cdn.jsdelivr.net/gh/daltonp-1689/from_age_to_age@main/images/polycarp.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;"></div>
+  <div class="fig-body">
+    <div class="fig-label">Martyrdom · c. AD 155</div>
+    <div class="fig-title">Polycarp of Smyrna</div>
+    <div class="fig-desc">Bishop of Smyrna and disciple of the Apostle John, burned alive at age 86 after refusing to renounce Christ. His martyrdom is one of the earliest and most detailed accounts of a Christian execution outside the New Testament.</div>
+  </div>
+</figure>
+
+<p>Out of persecution came theology. Thinkers called the Apologists — Justin Martyr, <strong>Tertullian</strong>, Origen — wrote sophisticated defenses of Christianity. Tertullian of Carthage coined the word <em>Trinitas</em> (Trinity) and the formula "one substance, three persons," effectively inventing Western theological vocabulary. His famous line: "The blood of the martyrs is the seed of the church."</p>
+
+<h3>III. Constantine and the Councils (313–451)</h3>
+
+<!-- Constantine -->
+<figure class="art-fig portrait">
+  <div class="fig-img-wrap"><img src="https://cdn.jsdelivr.net/gh/daltonp-1689/from_age_to_age@main/images/constantine.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;"></div>
+  <div class="fig-body">
+    <div class="fig-label">Emperor · r. 306–337</div>
+    <div class="fig-title">Constantine the Great</div>
+    <div class="fig-desc">In 313 AD Constantine legalized Christianity with the Edict of Milan, transforming the faith from a persecuted sect into the religion of the Roman Empire within a single generation.</div>
+  </div>
+</figure>
+
+<p>In 312 AD, the general <strong>Constantine</strong> reportedly saw a vision before battle and won the empire. The following year, the Edict of Milan legalized Christianity. Within decades it became the official religion of Rome. The church went from persecuted minority to imperial establishment in a single generation.</p>
+<p>Constantine convened the <strong>First Council of Nicaea</strong> in 325 AD to resolve the Arian crisis. A priest named <strong>Arius</strong> had been teaching that the Son was a created being — exalted, yes, but not eternal. His slogan: "There was a time when he was not." The council condemned Arius and produced the Nicene Creed, affirming the Son is <em>homoousios</em> — of one substance — with the Father.</p>
+
+<!-- Council of Nicaea -->
+<figure class="art-fig">
+  <div class="fig-img-wrap" style="min-height:240px;"><img src="https://cdn.jsdelivr.net/gh/daltonp-1689/from_age_to_age@main/images/nicaea.jpg" style="width:100%;max-height:360px;object-fit:cover;display:block;"></div>
+  <figcaption><strong>The First Council of Nicaea (325 AD).</strong> Roughly 300 bishops gathered to condemn Arianism and produce the Nicene Creed — the first ecumenical council of the Christian church, convened by Emperor Constantine.</figcaption>
+</figure>
+
+<p>The great defender of Nicene orthodoxy was <strong>Athanasius of Alexandria</strong>, who was exiled five times by emperors favoring Arianism. The phrase "Athanasius contra mundum" — Athanasius against the world — captured his lonely courage. He outlasted every emperor who opposed him.</p>
+<p>Later councils refined the picture. <strong>Constantinople (381)</strong> affirmed the Holy Spirit's full divinity. <strong>Ephesus (431)</strong> declared Mary Theotokos — God-bearer — affirming the unity of Christ's person. <strong>Chalcedon (451)</strong> defined the hypostatic union: Christ has two complete natures — fully divine, fully human — in one person, without mixture or confusion.</p>
+
+<div class="atl-box">
+  <div class="atl-label">The great councils</div>
+  <div class="atl-row"><div class="atl-year">325</div><div class="atl-text">Nicaea — Son is homoousios with the Father; Arianism condemned</div></div>
+  <div class="atl-row"><div class="atl-year">381</div><div class="atl-text">Constantinople — Holy Spirit's full divinity affirmed</div></div>
+  <div class="atl-row"><div class="atl-year">431</div><div class="atl-text">Ephesus — Mary declared Theotokos; Nestorius condemned</div></div>
+  <div class="atl-row"><div class="atl-year">451</div><div class="atl-text">Chalcedon — two natures in one person (hypostatic union)</div></div>
+</div>
+
+<h3>IV. The Medieval Church (500–1400)</h3>
+<p>As the Roman Empire collapsed in the West, the church became the primary institution holding European civilization together. Monasteries preserved literacy, copied manuscripts, and ran the only hospitals in Europe. <strong>Benedict of Nursia</strong> (529) founded Monte Cassino and wrote his Rule, shaping Western monasticism for a thousand years.</p>
+<p>The papacy grew in power and ambition. On Christmas Day 800, <strong>Charlemagne</strong> was crowned Holy Roman Emperor by Pope Leo III — cementing the pattern of entangled political and ecclesiastical authority that would define medieval Europe and produce endless conflict between popes and kings.</p>
+<p>In 1054, the long-simmering tensions between Rome and Constantinople erupted into the <strong>Great Schism</strong>. The papacy's claim to universal jurisdiction and Rome's unilateral insertion of "filioque" ("and the Son") into the Nicene Creed were the two explosive issues. The two sides exchanged mutual excommunications, dividing Christianity into Roman Catholic and Eastern Orthodox branches that remain separate to this day.</p>
+
+<!-- Hagia Sophia -->
+<figure class="art-fig">
+  <div class="fig-img-wrap" style="min-height:220px;"><img src="https://cdn.jsdelivr.net/gh/daltonp-1689/from_age_to_age@main/images/hagia-sophia.jpg" style="width:100%;max-height:360px;object-fit:cover;display:block;"></div>
+  <figcaption><strong>Hagia Sophia, Constantinople.</strong> Built by Emperor Justinian (532–537), this was the greatest church in Christendom for nearly a thousand years and the spiritual heart of Eastern Orthodox Christianity — until the Ottoman conquest of 1453.</figcaption>
+</figure>
+
+<!-- Aquinas -->
+<figure class="art-fig portrait">
+  <div class="fig-img-wrap"><img src="https://cdn.jsdelivr.net/gh/daltonp-1689/from_age_to_age@main/images/aquinas.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;"></div>
+  <div class="fig-body">
+    <div class="fig-label">Theologian · 1225–1274</div>
+    <div class="fig-title">Thomas Aquinas</div>
+    <div class="fig-desc">Aquinas wrote the Summa Theologica — over 1.5 million words synthesizing Aristotelian philosophy with Christian theology. Near death he called it all "straw" compared to what he had seen in contemplation.</div>
+  </div>
+</figure>
+
+<p>Great thinkers defined this era. <strong>Anselm of Canterbury</strong> (1033–1109) developed the satisfaction theory of atonement. <strong>Thomas Aquinas</strong> (1225–1274) synthesized Aristotelian philosophy with Christian theology in the massive Summa Theologica. Near death, after a mystical experience, he described his entire life's work as "straw."</p>
+<p>The era also produced reform movements that anticipated the Reformation. In England, <strong>John Wycliffe</strong> translated the Bible into English and attacked papal authority, influencing the Bohemian priest <strong>Jan Hus</strong>, who was burned at the Council of Constance in 1415 despite a promise of safe conduct — an act of treachery that set Bohemia ablaze.</p>
+
+<h3>V. The Reformation (1517–1648)</h3>
+
+<!-- Luther -->
+<figure class="art-fig portrait">
+  <div class="fig-img-wrap"><img src="https://cdn.jsdelivr.net/gh/daltonp-1689/from_age_to_age@main/images/luther.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;"></div>
+  <div class="fig-body">
+    <div class="fig-label">Reformer · 1483–1546</div>
+    <div class="fig-title">Martin Luther</div>
+    <div class="fig-desc">Luther's 95 Theses (1517) ignited the Protestant Reformation. Summoned before Emperor Charles V at the Diet of Worms in 1521, he refused to recant: "Here I stand; I can do no other."</div>
+  </div>
+</figure>
+
+<p>On October 31, 1517, an Augustinian monk named <strong>Martin Luther</strong> published 95 theses against the sale of indulgences. The printing press turned what might have been an academic dispute into a continent-wide crisis. Luther was summoned to the Diet of Worms in 1521, where he refused to recant before Emperor Charles V. While in hiding at Wartburg Castle, he translated the New Testament into German.</p>
+
+<!-- Calvin -->
+<figure class="art-fig portrait">
+  <div class="fig-img-wrap"><img src="https://cdn.jsdelivr.net/gh/daltonp-1689/from_age_to_age@main/images/calvin.png" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;"></div>
+  <div class="fig-body">
+    <div class="fig-label">Reformer · 1509–1564</div>
+    <div class="fig-title">John Calvin</div>
+    <div class="fig-desc">Calvin published the first edition of his Institutes of the Christian Religion at age 26, giving Reformed theology its systematic foundation — shaping Presbyterians, Congregationalists, and Baptists for centuries.</div>
+  </div>
+</figure>
+
+<p>The Reformation fractured quickly into competing streams. <strong>John Calvin</strong> (1509–1564), writing his Institutes at 26, gave Reformed theology its systematic foundation — with doctrines of divine sovereignty, predestination, and covenant that shaped Presbyterians, Congregationalists, and Baptists for centuries. <strong>William Tyndale</strong> translated the New Testament into English in 1526 and was burned in 1536. His dying prayer — "Lord, open the King of England's eyes" — was answered within two years.</p>
+<p>The Roman Catholic Church responded with the Council of Trent (1545–1563), reaffirming tradition alongside Scripture, works alongside faith, and seven sacraments. The Westminster Assembly (1643–1649) produced the Westminster Confession of Faith — the definitive statement of Reformed theology, still used by Presbyterians worldwide.</p>
+
+<h3>VI. The Modern Era (1700–Present)</h3>
+<p>The eighteenth century brought revival. <strong>George Whitefield</strong> and <strong>John Wesley</strong> led the First Great Awakening, preaching to tens of thousands in open fields across Britain and America. Whitefield's voice, without amplification, could reportedly reach 30,000 listeners at once — a fact Benjamin Franklin verified by calculation.</p>
+
+<!-- Spurgeon -->
+<figure class="art-fig portrait">
+  <div class="fig-img-wrap"><img src="https://cdn.jsdelivr.net/gh/daltonp-1689/from_age_to_age@main/images/spurgeon.jpg" style="width:100%;height:100%;object-fit:cover;object-position:top center;display:block;"></div>
+  <div class="fig-body">
+    <div class="fig-label">Preacher · 1834–1892</div>
+    <div class="fig-title">Charles Spurgeon</div>
+    <div class="fig-desc">The "Prince of Preachers" drew 6,000 listeners to London's Metropolitan Tabernacle every Sunday without amplification, and preached to an estimated 10 million people in his lifetime.</div>
+  </div>
+</figure>
+
+<p>The modern missions movement was born when <strong>William Carey</strong>, a Baptist cobbler, sailed for India in 1793 and spent 41 years translating Scripture into dozens of languages, establishing the pattern for Protestant foreign missions. In the following century, <strong>Charles Spurgeon</strong> — the "Prince of Preachers" — drew 6,000 to London's Metropolitan Tabernacle every Sunday and preached to an estimated 10 million people in his lifetime without a microphone.</p>
+<p>The Edinburgh Missionary Conference of 1910 launched the modern ecumenical movement, gathering 1,200 Protestant delegates to coordinate global mission. The Second Vatican Council (1962–65) transformed Roman Catholicism — permitting Mass in local languages, affirming religious liberty, and opening unprecedented dialogue with Protestants and Jews.</p>
+<p>Today, Christianity is the world's largest religion, with roughly two billion adherents. Its center of gravity has shifted dramatically southward — the most vibrant growth is now in sub-Saharan Africa, Latin America, and South Korea, not in the declining churches of Western Europe where the story began. The story is far from over.</p>
+
+</div>`;
+
+function openArticle(tr){
+  document.getElementById('article-content').innerHTML=ARTICLE_HTML;
+  document.getElementById('art-read-label').textContent='';
+  const ms=document.getElementById('main-scroll');
+  ms.onscroll=()=>{
+    const pct=Math.round(ms.scrollTop/(ms.scrollHeight-ms.clientHeight)*100);
+    document.getElementById('read-bar-fill').style.width=Math.min(100,pct)+'%';
+    document.getElementById('art-read-label').textContent=pct>=90?'Ready to mark complete — you\'ve read '+(pct)+'%':'';
+  };
+  showScreen('article');
+}
+
+function completeArticle(){
+  if(!S.tracks[currentTrack.id]) S.tracks[currentTrack.id]={articleDone:false,lessons:{}};
+  const wasNew=!S.tracks[currentTrack.id].articleDone;
+  S.tracks[currentTrack.id].articleDone=true;
+  save();
+  if(wasNew){addXP(30);showToast('Article complete! +30 XP');}
+  goTrack();
+}
+
+// ═══════════════════════════════════════════
+// LESSON ENGINE
+// ═══════════════════════════════════════════
+let lessonState=null;
+
+function buildMCOpts(q){
+  const wrong=[...q.wrong].sort(()=>Math.random()-0.5).slice(0,3);
+  const all=[q.correct,...wrong].sort(()=>Math.random()-0.5);
+  return{opts:all,answerIdx:all.indexOf(q.correct)};
+}
+
+function startLesson(tr,lessonIdx){
+  currentLessonIdx=lessonIdx;
+  const les=tr.lessons[lessonIdx];
+  const pool=[...les.questions].sort(()=>Math.random()-0.5).slice(0,8);
+  const questions=pool.map(q=>{
+    if(q.type==='mc'){
+      const{opts,answerIdx}=buildMCOpts(q);
+      return{...q,opts,answer:answerIdx};
+    }
+    return q;
+  });
+  lessonState={
+    trackId:tr.id,
+    lessonId:les.id,
+    lessonName:les.name,
+    questions,
+    qIdx:0,
+    lives:3,
+    correct:0,
+    wrong:0,
+    xpEarned:0,
+    answered:false,
+  };
+  renderQuestion();
+  showScreen('lesson');
+}
+
+function renderQuestion(){
+  const ls=lessonState;
+  if(ls.qIdx>=ls.questions.length){finishLesson();return;}
+  const q=ls.questions[ls.qIdx];
+  ls.answered=false;
+  const pct=Math.round(ls.qIdx/ls.questions.length*100);
+
+  const heartsHtml=[1,2,3].map(i=>`<span class="heart ${i<=ls.lives?'full':'empty'}" id="heart-${i}"><i class="ti ti-heart${i<=ls.lives?'':'-broken'}" style="font-size:22px;"></i></span>`).join('');
+
+  let qBody='';
+  if(q.type==='mc'){
+    qBody=`<div class="options" id="opts-container">`+
+      q.opts.map((o,i)=>`<button class="opt" onclick="selectOpt(${i})" id="opt-${i}"><span class="opt-letter">${'ABCD'[i]}</span>${o}</button>`).join('')+
+    `</div>`;
+  } else {
+    qBody=`<div class="tf-row">
+      <button class="tf-btn" onclick="selectTF(true)" id="tf-true"><i class="ti ti-check tf-icon"></i><span class="tf-label">True</span></button>
+      <button class="tf-btn" onclick="selectTF(false)" id="tf-false"><i class="ti ti-x tf-icon"></i><span class="tf-label">False</span></button>
+    </div>`;
+  }
+
+  document.getElementById('lesson-inner').innerHTML=`
+    <div class="lives-bar">
+      <div class="lives-display">${heartsHtml}</div>
+      <div class="lesson-prog-wrap">
+        <div class="lesson-prog-track"><div class="lesson-prog-fill" style="width:${pct}%"></div></div>
+        <div class="lesson-prog-label">${ls.qIdx}/${ls.questions.length}</div>
+      </div>
+    </div>
+    <div class="q-card" id="q-card">
+      <div class="q-card-header">
+        <span class="q-era">${q.era}</span>
+        <span class="q-type-badge">${q.type==='tf'?'True / False':'Multiple choice'}</span>
+      </div>
+      <div class="q-body">
+        <div class="q-text">${q.q}</div>
+        ${qBody}
+      </div>
+    </div>
+    <div class="q-feedback" id="q-feedback"></div>
+    <button class="continue-btn" id="continue-btn" style="display:none;" onclick="nextQ()">
+      <i class="ti ti-arrow-right"></i> Continue
+    </button>`;
+}
+
+function selectOpt(idx){
+  if(lessonState.answered) return;
+  lessonState.answered=true;
+  const q=lessonState.questions[lessonState.qIdx];
+  const correct=(idx===q.answer);
+  document.querySelectorAll('.opt').forEach(o=>{o.onclick=null;o.style.cursor='default';});
+  document.getElementById('opt-'+q.answer).classList.add('correct');
+  if(!correct) document.getElementById('opt-'+idx).classList.add('wrong');
+  handleResult(correct,q.explain);
+}
+
+function selectTF(val){
+  if(lessonState.answered) return;
+  lessonState.answered=true;
+  const q=lessonState.questions[lessonState.qIdx];
+  const correct=(val===q.answer);
+  const trueBtn=document.getElementById('tf-true');
+  const falseBtn=document.getElementById('tf-false');
+  if(trueBtn){trueBtn.onclick=null;trueBtn.style.cursor='default';}
+  if(falseBtn){falseBtn.onclick=null;falseBtn.style.cursor='default';}
+  const chosenBtn=document.getElementById(val?'tf-true':'tf-false');
+  const otherBtn=document.getElementById(val?'tf-false':'tf-true');
+  if(correct){
+    if(chosenBtn) chosenBtn.classList.add('correct');
+  } else {
+    if(chosenBtn) chosenBtn.classList.add('wrong');
+    if(otherBtn) otherBtn.classList.add('correct');
+  }
+  handleResult(correct,q.explain);
+}
+
+function handleResult(correct,explain){
+  if(correct){
+    lessonState.correct++;
+    lessonState.xpEarned+=10;
+    addXP(10);
+  } else {
+    lessonState.wrong++;
+    lessonState.lives--;
+    const heartEl=document.getElementById('heart-'+(lessonState.lives+1));
+    if(heartEl) heartEl.classList.add('lost');
+    const card=document.getElementById('q-card');
+    if(card){card.classList.add('shake');setTimeout(()=>card.classList.remove('shake'),450);}
+  }
+  const fb=document.getElementById('q-feedback');
+  fb.className='q-feedback show '+(correct?'correct':'wrong');
+  fb.innerHTML='<strong>'+(correct?'Correct!':'Wrong.')+'</strong> '+explain;
+  if(!correct && lessonState.lives<=0){
+    setTimeout(()=>showDeathScreen(),1600);
+  } else {
+    const btn=document.getElementById('continue-btn');
+    if(btn) btn.style.display='flex';
+  }
+}
+
+function nextQ(){
+  lessonState.qIdx++;
+  renderQuestion();
+}
+
+function showDeathScreen(){
+  const ls=lessonState;
+  document.getElementById('lesson-result-content').innerHTML=`
+    <div class="result-icon red"><i class="ti ti-heart-broken"></i></div>
+    <div class="result-title">Out of lives!</div>
+    <div class="result-sub">You ran out of hearts on <strong>${ls.lessonName}</strong>. Review the article and try again.</div>
+    <div class="result-stats">
+      <div class="rst"><div class="n">${ls.correct}</div><div class="l">Correct</div></div>
+      <div class="rst"><div class="n">${ls.wrong}</div><div class="l">Wrong</div></div>
+    </div>
+    <div class="result-btns">
+      <button class="btn btn-primary btn-full" onclick="retryLesson()"><i class="ti ti-refresh"></i> Try again</button>
+      <button class="btn btn-full" onclick="goTrack()">Back to track</button>
+    </div>`;
+  showScreen('lesson-result');
+}
+
+function retryLesson(){
+  startLesson(currentTrack,currentLessonIdx);
+}
+
+function finishLesson(){
+  const ls=lessonState;
+  const pct=Math.round(ls.correct/ls.questions.length*100);
+  let stars=1;
+  if(ls.wrong===0) stars=3;
+  else if(ls.wrong<=1) stars=2;
+  if(!S.tracks[ls.trackId]) S.tracks[ls.trackId]={articleDone:false,lessons:{}};
+  const prev=S.tracks[ls.trackId].lessons[ls.lessonId]||0;
+  S.tracks[ls.trackId].lessons[ls.lessonId]=Math.max(prev,stars);
+  if(S.lastStudied!==today()){
+    const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+    S.streak=S.lastStudied===yesterday.toDateString()?(S.streak||0)+1:1;
+    S.lastStudied=today();
+  }
+  save();updateTopbar();
+
+  const starsHtml=[1,2,3].map(i=>`<i class="ti ti-star" style="font-size:28px;color:${i<=stars?'var(--gold)':'var(--parch2)'};margin:0 3px;"></i>`).join('');
+
+  document.getElementById('lesson-result-content').innerHTML=`
+    <div class="result-icon green"><i class="ti ti-trophy"></i></div>
+    <div class="result-title">Lesson complete!</div>
+    <div style="margin-bottom:1rem;">${starsHtml}</div>
+    <div class="result-sub">${pct}% correct · ${ls.xpEarned} XP earned</div>
+    <div class="result-stats">
+      <div class="rst"><div class="n">${ls.correct}</div><div class="l">Correct</div></div>
+      <div class="rst"><div class="n">${ls.wrong}</div><div class="l">Wrong</div></div>
+      <div class="rst"><div class="n">${ls.xpEarned}</div><div class="l">XP</div></div>
+    </div>
+    <div class="result-btns">
+      ${ls.wrong>0?`<button class="btn btn-gold btn-full" onclick="retryLesson()"><i class="ti ti-refresh"></i> Improve score</button>`:''}
+      <button class="btn btn-primary btn-full" onclick="goTrack()"><i class="ti ti-arrow-right"></i> Back to track</button>
+    </div>`;
+  showScreen('lesson-result');
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+updateTopbar();
+renderHome();
+</script>
+</body>
+</html>
