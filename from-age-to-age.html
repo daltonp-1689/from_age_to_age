@@ -138,7 +138,8 @@ html,body{height:100%;font-family:'Lora',Georgia,serif;background:#fff;color:var
   display:block;
   object-fit:cover;
   max-height:360px;
-  transition:opacity 0.4s;
+  position:relative;
+  z-index:1;
 }
 /* Skeleton shimmer while loading */
 .art-fig .fig-img-wrap::before{
@@ -149,7 +150,6 @@ html,body{height:100%;font-family:'Lora',Georgia,serif;background:#fff;color:var
   animation:shimmer 1.6s infinite;
   z-index:0;
 }
-.art-fig .fig-img-wrap img.loaded{position:relative;z-index:1;}
 .art-fig .fig-img-wrap img.error-hide{display:none;}
 @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 
