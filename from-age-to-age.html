@@ -99,6 +99,48 @@ html,body{height:100%;font-family:'Lora',Georgia,serif;background:#fff;color:var
 .lesson-star.lit{color:var(--gold);}
 .lesson-lock{font-size:16px;color:var(--ink3);}
 
+/* ─── TIMELINE LESSON LIST ─── */
+.tl-list{position:relative;}
+.tl-spine{position:absolute;left:15px;top:6px;bottom:28px;width:1.5px;background:var(--parch2);z-index:0;}
+.tl-group{position:relative;margin-bottom:2px;}
+.tl-era-row{display:flex;align-items:center;gap:10px;padding:22px 0 10px;position:relative;z-index:1;}
+.tl-group:first-child .tl-era-row{padding-top:2px;}
+.tl-node{width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--parch2);flex-shrink:0;margin-left:9px;z-index:1;position:relative;transition:border-color 0.2s,background 0.2s;}
+.tl-node.upcoming{border-color:var(--gold3);}
+.tl-node.active{border-color:var(--gold);}
+.tl-node.done{background:var(--gold);border-color:var(--gold);}
+.tl-era-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink3);font-family:'Karla',sans-serif;}
+.tl-cards{padding-left:30px;display:flex;flex-direction:column;gap:5px;margin-bottom:4px;}
+
+/* Essay card */
+.tl-essay{background:var(--parch);border:1px solid var(--parch2);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:11px;}
+.tl-essay:hover:not(.locked){border-color:var(--gold3);background:#f5efe2;}
+.tl-essay.locked{opacity:0.38;cursor:not-allowed;}
+.tl-essay.done{border-color:#d4c898;}
+.tl-e-icon{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:rgba(196,160,96,0.15);color:var(--gold2);}
+.tl-e-icon.done{background:var(--green-bg);color:var(--green2);}
+.tl-e-info{flex:1;min-width:0;}
+.tl-e-type{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold2);font-family:'Karla',sans-serif;margin-bottom:1px;}
+.tl-e-name{font-family:'Lora',serif;font-size:14px;color:var(--ink);line-height:1.3;}
+.tl-e-meta{font-size:10px;color:var(--ink3);font-family:'Karla',sans-serif;margin-top:2px;}
+
+/* Quiz card */
+.tl-quiz{background:#fff;border:1px solid var(--parch2);border-radius:8px;padding:12px 14px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:11px;box-shadow:0 1px 3px rgba(28,21,16,0.06);}
+.tl-quiz:hover:not(.locked){border-color:var(--bd2);}
+.tl-quiz.locked{opacity:0.38;cursor:not-allowed;}
+.tl-quiz.complete{border-color:#b0d880;}
+.tl-q-icon{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:var(--parch);color:var(--ink3);}
+.tl-q-icon.active{background:var(--crimson);color:#fff;}
+.tl-q-icon.complete{background:var(--green-bg);color:var(--green2);}
+.tl-q-info{flex:1;min-width:0;}
+.tl-q-type{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);font-family:'Karla',sans-serif;margin-bottom:1px;}
+.tl-q-name{font-family:'Lora',serif;font-size:14px;color:var(--ink);line-height:1.3;}
+.tl-q-meta{font-size:10px;color:var(--ink3);font-family:'Karla',sans-serif;margin-top:2px;}
+.tl-q-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.tl-stars{display:flex;gap:2px;}
+.tl-star{font-size:11px;color:var(--parch2);}
+.tl-star.lit{color:var(--gold);}
+
 /* ─── ARTICLE ─── */
 .article-wrap{max-width:660px;margin:0 auto;padding:28px 24px;background:#fff;}
 .read-bar{height:2px;background:var(--parch2);position:sticky;top:0;z-index:5;}
@@ -391,7 +433,7 @@ figcaption strong{color:var(--ink2);font-weight:500;}
       <div style="max-width:660px;margin:0 auto;padding:0 24px 36px;">
         <div style="display:flex;justify-content:space-between;align-items:center;padding-top:1.5rem;border-top:1px solid var(--bd);">
           <span style="font-size:13px;color:var(--ink3);" id="art-read-label"></span>
-          <button class="btn btn-primary" onclick="completeArticle()"><i class="ti ti-check"></i> Mark as read</button>
+          <button class="btn btn-primary" onclick="completeLessonArticle()"><i class="ti ti-arrow-right"></i> Start Quiz</button>
         </div>
       </div>
     </div>
@@ -418,7 +460,7 @@ figcaption strong{color:var(--ink2);font-weight:500;}
 // ═══════════════════════════════════════════
 function loadState(){
   try{const s=localStorage.getItem('fromagetoage_v1');if(s)return JSON.parse(s);}catch(e){}
-  return{xp:0,level:1,streak:0,lastStudied:null,tracks:{track1:{articleDone:false,lessons:{l1:0,l2:0,l3:0,l4:0}}}};
+  return{xp:0,level:1,streak:0,lastStudied:null,tracks:{track1:{lessons:{l1:0,l2:0,l3:0,l4:0}}}};
 }
 let S=loadState();
 function save(){try{localStorage.setItem('fromagetoage_v1',JSON.stringify(S));}catch(e){}}
@@ -471,10 +513,10 @@ const TRACKS=[
     icon:'ti-book-2',
     pills:['Early Church','Medieval','Reformation','Modern'],
     lessons:[
-      {id:'l1',name:'The Early Church & Persecution',meta:'8 questions · Centuries 1–3',questions:L1_QUESTIONS()},
-      {id:'l2',name:'Councils & Creeds',meta:'8 questions · 4th–5th century',questions:L2_QUESTIONS()},
-      {id:'l3',name:'Medieval Church & Schism',meta:'8 questions · 6th–15th century',questions:L3_QUESTIONS()},
-      {id:'l4',name:'Reformation & Modern Era',meta:'8 questions · 16th–20th century',questions:L4_QUESTIONS()},
+      {id:'l1',name:'The Early Church & Persecution',meta:'8 questions · Centuries 1–3',questions:L1_QUESTIONS(),readMeta:'~3 min read · Sections I–II'},
+      {id:'l2',name:'Councils & Creeds',meta:'8 questions · 4th–5th century',questions:L2_QUESTIONS(),readMeta:'~2 min read · Section III'},
+      {id:'l3',name:'Medieval Church & Schism',meta:'8 questions · 6th–15th century',questions:L3_QUESTIONS(),readMeta:'~2 min read · Section IV'},
+      {id:'l4',name:'Reformation & Modern Era',meta:'8 questions · 16th–20th century',questions:L4_QUESTIONS(),readMeta:'~3 min read · Sections V–VI'},
     ]
   },
   {id:'track2',name:'The Reformation Era',eyebrow:'Track 2 — Reformation',desc:'Luther, Calvin, Zwingli, and the fracturing of Western Christianity.',icon:'ti-flame',pills:['Luther','Calvin','Zwingli','Anabaptists'],lessons:[],locked:true},
@@ -587,12 +629,11 @@ function renderHome(){
   const c=document.getElementById('tracks-container');
   c.innerHTML='';
   TRACKS.forEach(tr=>{
-    const ts=S.tracks[tr.id]||{articleDone:false,lessons:{}};
+    const ts=S.tracks[tr.id]||{lessons:{}};
     const totalLessons=tr.lessons.length;
     const doneLessons=totalLessons===0?0:tr.lessons.filter(l=>(ts.lessons[l.id]||0)>=1).length;
-    const articleDone=ts.articleDone||false;
-    const steps=totalLessons+1;
-    const doneSteps=(articleDone?1:0)+doneLessons;
+    const steps=totalLessons;
+    const doneSteps=doneLessons;
     const pct=steps===0?0:Math.round(doneSteps/steps*100);
     const isLocked=tr.locked||false;
     const isComplete=!isLocked&&pct===100;
@@ -628,51 +669,78 @@ function renderTrackDetail(tr){
   document.getElementById('td-eyebrow').textContent=tr.eyebrow;
   document.getElementById('td-title').textContent=tr.name;
   document.getElementById('td-desc').textContent=tr.desc;
-  const ts=S.tracks[tr.id]||{articleDone:false,lessons:{}};
+  const ts=S.tracks[tr.id]||{lessons:{}};
   const c=document.getElementById('lessons-container');
   c.innerHTML='';
 
-  // Intro article row
-  const articleDone=ts.articleDone||false;
-  const artDiv=document.createElement('div');
-  artDiv.className='lesson-row'+(articleDone?' complete':'');
-  artDiv.innerHTML=`
-    <div class="lesson-num${articleDone?' complete':''}"><i class="ti ${articleDone?'ti-check':'ti-book-2'}" style="font-size:16px;"></i></div>
-    <div class="lesson-info">
-      <div class="lesson-name">Introduction — The Full Story</div>
-      <div class="lesson-meta">~10 min read · Required to unlock lessons</div>
-    </div>
-    <div class="lesson-right">
-      <span style="font-size:12px;color:${articleDone?'var(--green2)':'var(--gold)'};">${articleDone?'Read':'Read first'}</span>
-      <i class="ti ti-chevron-right" style="font-size:16px;color:var(--ink3);"></i>
-    </div>`;
-  artDiv.onclick=()=>openArticle(tr);
-  c.appendChild(artDiv);
+  const eraLabels=['c. AD 30–313','AD 313–451','AD 500–1400','AD 1517–present'];
+  const essayTitles=['The Early Church','Constantine & the Councils','The Medieval Church','Reformation & Modern Era'];
 
-  // Lesson rows
+  const list=document.createElement('div');
+  list.className='tl-list';
+  const spine=document.createElement('div');
+  spine.className='tl-spine';
+  list.appendChild(spine);
+
   tr.lessons.forEach((les,i)=>{
     const stars=ts.lessons[les.id]||0;
-    const prevDone=i===0?articleDone:(ts.lessons[tr.lessons[i-1].id]||0)>=1;
+    const lesRead=ts['read_'+les.id]||false;
+    const prevDone=i===0?true:(ts.lessons[tr.lessons[i-1].id]||0)>=1;
     const isLocked=!prevDone;
     const isComplete=stars>=1;
     const isActive=!isLocked&&!isComplete;
-    const div=document.createElement('div');
-    div.className='lesson-row'+(isLocked?' locked':'')+(isComplete?' complete':'');
-    const numCls=isComplete?'complete':isActive?'active':'';
-    const starsHtml=[1,2,3].map(n=>`<i class="ti ti-star lesson-star${stars>=n?' lit':''}"></i>`).join('');
-    div.innerHTML=`
-      <div class="lesson-num ${numCls}">${isComplete?'<i class="ti ti-check" style="font-size:14px;"></i>':isLocked?'<i class="ti ti-lock" style="font-size:14px;"></i>':(i+1)}</div>
-      <div class="lesson-info">
-        <div class="lesson-name">${les.name}</div>
-        <div class="lesson-meta">${les.meta}</div>
-      </div>
-      <div class="lesson-right">
-        <div class="lesson-stars">${starsHtml}</div>
-        <i class="ti ti-chevron-right" style="font-size:16px;color:var(--ink3);"></i>
+
+    const group=document.createElement('div');
+    group.className='tl-group';
+
+    const nodeCls=isComplete?'done':isActive?'active':isLocked?'':'upcoming';
+    group.innerHTML=`
+      <div class="tl-era-row">
+        <div class="tl-node ${nodeCls}"></div>
+        <span class="tl-era-label">${eraLabels[i]}</span>
       </div>`;
-    if(!isLocked) div.onclick=()=>startLesson(tr,i);
-    c.appendChild(div);
+
+    const cards=document.createElement('div');
+    cards.className='tl-cards';
+
+    // Essay card
+    const essayDiv=document.createElement('div');
+    essayDiv.className='tl-essay'+(isLocked?' locked':'')+(lesRead?' done':'');
+    essayDiv.innerHTML=`
+      <div class="tl-e-icon${lesRead?' done':''}"><i class="ti ${lesRead?'ti-check':'ti-book-2'}"></i></div>
+      <div class="tl-e-info">
+        <div class="tl-e-type">Reading</div>
+        <div class="tl-e-name">${essayTitles[i]}</div>
+        <div class="tl-e-meta">${les.readMeta}</div>
+      </div>
+      <i class="ti ti-chevron-right" style="font-size:14px;color:var(--ink3);flex-shrink:0;"></i>`;
+    if(!isLocked) essayDiv.onclick=()=>openLessonArticle(tr,i);
+    cards.appendChild(essayDiv);
+
+    // Quiz card
+    const starsHtml=[1,2,3].map(n=>`<i class="ti ti-star tl-star${stars>=n?' lit':''}"></i>`).join('');
+    const quizDiv=document.createElement('div');
+    quizDiv.className='tl-quiz'+(isLocked?' locked':'')+(isComplete?' complete':'');
+    const qIconCls=isComplete?'complete':(isActive&&lesRead)?'active':'';
+    quizDiv.innerHTML=`
+      <div class="tl-q-icon ${qIconCls}"><i class="ti ${isComplete?'ti-check':isLocked?'ti-lock':'ti-pencil'}"></i></div>
+      <div class="tl-q-info">
+        <div class="tl-q-type">Quiz</div>
+        <div class="tl-q-name">${les.name}</div>
+        <div class="tl-q-meta">${les.meta}</div>
+      </div>
+      <div class="tl-q-right">
+        ${isComplete?`<div class="tl-stars">${starsHtml}</div>`:''}
+        <i class="ti ti-chevron-right" style="font-size:14px;color:var(--ink3);"></i>
+      </div>`;
+    if(!isLocked) quizDiv.onclick=()=>startLesson(tr,i);
+    cards.appendChild(quizDiv);
+
+    group.appendChild(cards);
+    list.appendChild(group);
   });
+
+  c.appendChild(list);
 }
 
 // ═══════════════════════════════════════════
@@ -681,13 +749,13 @@ function renderTrackDetail(tr){
 // Paul's journey uses a Leaflet map rendered after article is injected
 // ═══════════════════════════════════════════
 
-const ARTICLE_HTML=`
+const L1_ARTICLE_HTML=`
 <div class="article-eyebrow">
-  <span class="art-tag">Track 1 — General Overview</span>
-  <span class="art-time"><i class="ti ti-clock"></i> ~10 min read</span>
+  <span class="art-tag">Lesson 1 Reading · Sections I–II</span>
+  <span class="art-time"><i class="ti ti-clock"></i> ~3 min read</span>
 </div>
-<h1 class="article-title">The Story of the Church</h1>
-<p class="article-sub">From a borrowed upper room in Jerusalem to two billion people on every continent — the most consequential story in Western civilization.</p>
+<h1 class="article-title">The Early Church</h1>
+<p class="article-sub">From Pentecost to persecution — how a movement born in an upper room survived three centuries of Roman opposition.</p>
 <div class="art-divider"></div>
 <div class="article-body">
 
@@ -732,6 +800,18 @@ const ARTICLE_HTML=`
 
 <p>Out of persecution came theology. Thinkers called the Apologists — Justin Martyr, <strong>Tertullian</strong>, Origen — wrote sophisticated defenses of Christianity. Tertullian of Carthage coined the word <em>Trinitas</em> (Trinity) and the formula "one substance, three persons," effectively inventing Western theological vocabulary. His famous line: "The blood of the martyrs is the seed of the church."</p>
 
+</div>`;
+
+const L2_ARTICLE_HTML=`
+<div class="article-eyebrow">
+  <span class="art-tag">Lesson 2 Reading · Section III</span>
+  <span class="art-time"><i class="ti ti-clock"></i> ~2 min read</span>
+</div>
+<h1 class="article-title">Constantine &amp; the Councils</h1>
+<p class="article-sub">How the church moved from persecuted minority to imperial religion — and wrestled to define who Jesus really is.</p>
+<div class="art-divider"></div>
+<div class="article-body">
+
 <h3>III. Constantine and the Councils (313–451)</h3>
 
 <!-- Constantine -->
@@ -764,6 +844,18 @@ const ARTICLE_HTML=`
   <div class="atl-row"><div class="atl-year">451</div><div class="atl-text">Chalcedon — two natures in one person (hypostatic union)</div></div>
 </div>
 
+</div>`;
+
+const L3_ARTICLE_HTML=`
+<div class="article-eyebrow">
+  <span class="art-tag">Lesson 3 Reading · Section IV</span>
+  <span class="art-time"><i class="ti ti-clock"></i> ~2 min read</span>
+</div>
+<h1 class="article-title">The Medieval Church</h1>
+<p class="article-sub">How monasteries held civilization together, popes clashed with kings, and the church split in two — setting the stage for reform.</p>
+<div class="art-divider"></div>
+<div class="article-body">
+
 <h3>IV. The Medieval Church (500–1400)</h3>
 <p>As the Roman Empire collapsed in the West, the church became the primary institution holding European civilization together. Monasteries preserved literacy, copied manuscripts, and ran the only hospitals in Europe. <strong>Benedict of Nursia</strong> (529) founded Monte Cassino and wrote his Rule, shaping Western monasticism for a thousand years.</p>
 <p>The papacy grew in power and ambition. On Christmas Day 800, <strong>Charlemagne</strong> was crowned Holy Roman Emperor by Pope Leo III — cementing the pattern of entangled political and ecclesiastical authority that would define medieval Europe and produce endless conflict between popes and kings.</p>
@@ -787,6 +879,18 @@ const ARTICLE_HTML=`
 
 <p>Great thinkers defined this era. <strong>Anselm of Canterbury</strong> (1033–1109) developed the satisfaction theory of atonement. <strong>Thomas Aquinas</strong> (1225–1274) synthesized Aristotelian philosophy with Christian theology in the massive Summa Theologica. Near death, after a mystical experience, he described his entire life's work as "straw."</p>
 <p>The era also produced reform movements that anticipated the Reformation. In England, <strong>John Wycliffe</strong> translated the Bible into English and attacked papal authority, influencing the Bohemian priest <strong>Jan Hus</strong>, who was burned at the Council of Constance in 1415 despite a promise of safe conduct — an act of treachery that set Bohemia ablaze.</p>
+
+</div>`;
+
+const L4_ARTICLE_HTML=`
+<div class="article-eyebrow">
+  <span class="art-tag">Lesson 4 Reading · Sections V–VI</span>
+  <span class="art-time"><i class="ti ti-clock"></i> ~3 min read</span>
+</div>
+<h1 class="article-title">Reformation &amp; the Modern Era</h1>
+<p class="article-sub">From Luther's 95 Theses to two billion believers worldwide — how the church fractured, revived, and spread to every continent.</p>
+<div class="art-divider"></div>
+<div class="article-body">
 
 <h3>V. The Reformation (1517–1648)</h3>
 
@@ -834,25 +938,34 @@ const ARTICLE_HTML=`
 
 </div>`;
 
-function openArticle(tr){
-  document.getElementById('article-content').innerHTML=ARTICLE_HTML;
+// Wire article HTML into lessons after constants are defined
+TRACKS[0].lessons[0].articleHtml=L1_ARTICLE_HTML;
+TRACKS[0].lessons[1].articleHtml=L2_ARTICLE_HTML;
+TRACKS[0].lessons[2].articleHtml=L3_ARTICLE_HTML;
+TRACKS[0].lessons[3].articleHtml=L4_ARTICLE_HTML;
+
+function openLessonArticle(tr,lessonIdx){
+  const les=tr.lessons[lessonIdx];
+  document.getElementById('article-content').innerHTML=les.articleHtml;
   document.getElementById('art-read-label').textContent='';
   const ms=document.getElementById('main-scroll');
   ms.onscroll=()=>{
     const pct=Math.round(ms.scrollTop/(ms.scrollHeight-ms.clientHeight)*100);
     document.getElementById('read-bar-fill').style.width=Math.min(100,pct)+'%';
-    document.getElementById('art-read-label').textContent=pct>=90?'Ready to mark complete — you\'ve read '+(pct)+'%':'';
+    document.getElementById('art-read-label').textContent=pct>=90?'Ready to start the quiz!':'';
   };
   showScreen('article');
 }
 
-function completeArticle(){
-  if(!S.tracks[currentTrack.id]) S.tracks[currentTrack.id]={articleDone:false,lessons:{}};
-  const wasNew=!S.tracks[currentTrack.id].articleDone;
-  S.tracks[currentTrack.id].articleDone=true;
+function completeLessonArticle(){
+  if(!S.tracks[currentTrack.id]) S.tracks[currentTrack.id]={lessons:{}};
+  const les=currentTrack.lessons[currentLessonIdx];
+  const key='read_'+les.id;
+  const wasNew=!S.tracks[currentTrack.id][key];
+  S.tracks[currentTrack.id][key]=true;
   save();
-  if(wasNew){addXP(30);showToast('Article complete! +30 XP');}
-  goTrack();
+  if(wasNew){addXP(15);showToast('Reading complete! +15 XP');}
+  startQuiz(currentTrack,currentLessonIdx);
 }
 
 // ═══════════════════════════════════════════
@@ -867,6 +980,14 @@ function buildMCOpts(q){
 }
 
 function startLesson(tr,lessonIdx){
+  currentLessonIdx=lessonIdx;
+  const les=tr.lessons[lessonIdx];
+  const ts=S.tracks[tr.id]||{lessons:{}};
+  if(!ts['read_'+les.id]){openLessonArticle(tr,lessonIdx);return;}
+  startQuiz(tr,lessonIdx);
+}
+
+function startQuiz(tr,lessonIdx){
   currentLessonIdx=lessonIdx;
   const les=tr.lessons[lessonIdx];
   const pool=[...les.questions].sort(()=>Math.random()-0.5).slice(0,8);
@@ -1003,7 +1124,7 @@ function showDeathScreen(){
   document.getElementById('lesson-result-content').innerHTML=`
     <div class="result-icon red"><i class="ti ti-heart-broken"></i></div>
     <div class="result-title">Out of lives!</div>
-    <div class="result-sub">You ran out of hearts on <strong>${ls.lessonName}</strong>. Review the article and try again.</div>
+    <div class="result-sub">You ran out of hearts on <strong>${ls.lessonName}</strong>. Review the reading and try again.</div>
     <div class="result-stats">
       <div class="rst"><div class="n">${ls.correct}</div><div class="l">Correct</div></div>
       <div class="rst"><div class="n">${ls.wrong}</div><div class="l">Wrong</div></div>
@@ -1025,7 +1146,7 @@ function finishLesson(){
   let stars=1;
   if(ls.wrong===0) stars=3;
   else if(ls.wrong<=1) stars=2;
-  if(!S.tracks[ls.trackId]) S.tracks[ls.trackId]={articleDone:false,lessons:{}};
+  if(!S.tracks[ls.trackId]) S.tracks[ls.trackId]={lessons:{}};
   const prev=S.tracks[ls.trackId].lessons[ls.lessonId]||0;
   S.tracks[ls.trackId].lessons[ls.lessonId]=Math.max(prev,stars);
   if(S.lastStudied!==today()){
