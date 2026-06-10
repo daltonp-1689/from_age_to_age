@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Age to Age</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+<div class="shell">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div onclick="goHome()" style="cursor:pointer;">
+      <div class="brand">From <em>Age</em> to Age</div>
+    </div>
+    <!-- Legacy elements kept for JS (hidden) -->
+    <div style="display:none">
+      <span id="lvl-label">Level 1 · Catechumen</span>
+      <span id="xp-next-label">50 XP to next level</span>
+      <div id="xp-fill" style="width:0%"></div>
+      <span id="streak-disp">0</span>
+      <span id="total-xp-disp">0</span>
+    </div>
+    <!-- Editorial center stats -->
+    <div class="topbar-stats" id="topbar-stats-text">Church History</div>
+    <!-- Actions -->
+    <div class="topbar-actions">
+      <button class="topbar-resume-btn" id="topbar-resume-btn" onclick="handleTopbarResume()">Resume →</button>
+      <button class="sign-out-pill" onclick="signOut()" title="Sign out"><i class="ti ti-logout"></i></button>
+    </div>
+  </div>
+
+  <div class="main" id="main-scroll">
+
+    <!-- HOME -->
+    <div class="screen active" id="screen-home">
+      <div class="home-wrap">
+        <!-- Hero -->
+        <div class="home-hero">
+          <div class="home-eyebrow-wrap">
+            <span class="home-eyebrow-rule"></span>
+            <span class="home-eyebrow-text">An anthology, in twenty-seven tracks</span>
+          </div>
+          <h1 class="home-display-title">From <em>Age</em> to Age.</h1>
+          <p class="home-display-sub">Learn the story of the church — from Pentecost to the present — one track at a time.</p>
+        </div>
+        <!-- Dynamic tracks (resume card + track groups injected here) -->
+        <div id="tracks-container"></div>
+      </div>
+    </div>
+
+    <!-- TRACK DETAIL -->
+    <div class="screen" id="screen-track">
+      <div class="detail-wrap">
+        <div class="back-btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> All tracks</div>
+        <div class="detail-header">
+          <div class="detail-eyebrow" id="td-eyebrow"></div>
+          <h2 id="td-title"></h2>
+          <p id="td-desc"></p>
+        </div>
+        <div class="lessons-label">Lessons</div>
+        <div id="lessons-container"></div>
+      </div>
+    </div>
+
+    <!-- ARTICLE -->
+    <div class="screen" id="screen-article">
+      <div class="read-bar"><div class="read-bar-fill" id="read-bar-fill" style="width:0%"></div></div>
+      <div class="article-wrap" id="article-content"></div>
+      <div class="art-footer">
+        <div class="art-footer-inner">
+          <span class="art-read-label" id="art-read-label"></span>
+          <button class="art-start-quiz" onclick="completeLessonArticle()">Start Learning <i class="ti ti-arrow-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEARN -->
+    <div class="screen" id="screen-learn">
+      <div id="learn-inner"></div>
+    </div>
+
+    <!-- STUDY -->
+    <div class="screen" id="screen-study">
+      <div id="study-inner"></div>
+    </div>
+
+    <!-- LESSON (questions) -->
+    <div class="screen" id="screen-lesson">
+      <div class="lesson-wrap" id="lesson-inner"></div>
+    </div>
+
+    <!-- LESSON RESULT -->
+    <div class="screen" id="screen-lesson-result">
+      <div class="lesson-wrap">
+        <div class="result-screen" id="lesson-result-content"></div>
+      </div>
+    </div>
+
+    <!-- EXAM -->
+    <div class="screen" id="screen-exam">
+      <div class="lesson-wrap" id="exam-inner" style="background:var(--parch);min-height:100%;"></div>
+    </div>
+
+    <!-- EXAM RESULT -->
+    <div class="screen" id="screen-exam-result">
+      <div class="lesson-wrap" style="background:var(--parch);min-height:100%;">
+        <div class="result-screen" id="exam-result-content"></div>
+      </div>
+    </div>
+
+    <!-- PRACTICE SELECT -->
+    <div class="screen" id="screen-practice-select">
+      <div id="practice-select-inner"></div>
+    </div>
+
+    <!-- PRACTICE -->
+    <div class="screen" id="screen-practice">
+      <div class="lesson-wrap" id="practice-inner"></div>
+    </div>
+
+    <!-- QUICK PRACTICE -->
+    <div class="screen" id="screen-quick-practice">
+      <div class="lesson-wrap" id="quick-practice-inner"></div>
+    </div>
+
+    <!-- ERA CHECK -->
+    <div class="screen" id="screen-era-check">
+      <div id="era-check-inner"></div>
+    </div>
+
+    <!-- PERSON CHECK -->
+    <div class="screen" id="screen-person-check">
+      <div id="person-check-inner"></div>
+    </div>
+
+  </div>
+</div>
+<div id="cold-open" class="cold-open" style="display:none;" onclick="advanceColdOpen()">
+  <div class="co-bg" id="co-bg"></div>
+  <button class="co-skip" onclick="event.stopPropagation();skipColdOpen()">Skip</button>
+  <div class="co-stage">
+    <div class="co-text" id="co-text"></div>
+  </div>
+  <div class="co-bar-wrap">
+    <div class="co-bar" id="co-bar"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- Problem report widget (temporary) -->
+<div id="report-panel">
+  <div id="report-panel-title">Report a problem</div>
+  <div id="report-context"></div>
+  <textarea id="report-note" placeholder="Describe the issue…"></textarea>
+  <button id="report-submit" onclick="submitReport()">Submit</button>
+</div>
+<button id="report-btn" onclick="toggleReportPanel()" title="Report a problem"><i class="ti ti-flag"></i></button>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

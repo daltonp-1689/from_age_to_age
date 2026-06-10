@@ -320,6 +320,8 @@ figcaption strong{color:var(--ink2);font-weight:500;}
 .opt.correct .opt-letter{background:var(--green2);color:#fff;}
 .opt.wrong{background:var(--red-bg);border-color:#e8a0a0;color:var(--red);}
 .opt.wrong .opt-letter{background:var(--red2);color:#fff;}
+.opt.tl-done{background:var(--green-bg);border-color:#b0d880;color:var(--green);cursor:default;pointer-events:none;}
+.opt.tl-done .opt-letter{background:var(--green2);color:#fff;}
 
 /* tf options */
 .tf-row{display:flex;gap:10px;margin-top:1rem;}
@@ -374,6 +376,17 @@ figcaption strong{color:var(--ink2);font-weight:500;}
 .xp-pop{position:fixed;font-size:14px;font-weight:500;color:var(--gold2);pointer-events:none;z-index:300;opacity:0;font-family:'Lora',serif;}
 @keyframes floatup{0%{opacity:1;transform:translateY(0);}100%{opacity:0;transform:translateY(-50px);}}
 
+/* ─── EXAM ─── */
+.exam-seal-bar{background:linear-gradient(135deg,var(--crimson2) 0%,var(--crimson) 100%);padding:18px 24px;margin:-24px -24px 24px;text-align:center;}
+.exam-seal-bar .exam-eyebrow{font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.7);font-family:'Karla',sans-serif;margin-bottom:4px;}
+.exam-seal-bar .exam-title{font-family:'Lora',serif;font-size:20px;font-weight:600;color:#fff;}
+.exam-seal-bar .exam-prog{font-size:11px;color:rgba(255,255,255,0.6);font-family:'Karla',sans-serif;margin-top:4px;}
+.exam-cta{margin-top:18px;padding:20px;border:1px solid var(--parch2);border-radius:8px;background:var(--parch);text-align:center;}
+.exam-cta-eyebrow{font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold2);font-family:'Karla',sans-serif;margin-bottom:8px;}
+.exam-cta p{font-size:13px;color:var(--ink3);font-family:'Karla',sans-serif;line-height:1.6;margin-bottom:14px;}
+.wax-seal{display:inline-flex;align-items:center;gap:5px;padding:3px 11px;border-radius:20px;background:var(--crimson);color:#fff;font-size:10px;font-family:'Karla',sans-serif;font-weight:500;letter-spacing:0.04em;}
+.wax-seal i{font-size:12px;}
+
 </style>
 </head>
 <body>
@@ -387,7 +400,7 @@ figcaption strong{color:var(--ink2);font-weight:500;}
     </div>
     <div class="xp-wrap">
       <div class="xp-meta">
-        <span>Level <span id="lvl-num">1</span></span>
+        <span id="lvl-label">Level 1 · Catechumen</span>
         <span id="xp-next-label">50 XP to next level</span>
       </div>
       <div class="xp-track"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
@@ -450,6 +463,18 @@ figcaption strong{color:var(--ink2);font-weight:500;}
       </div>
     </div>
 
+    <!-- EXAM -->
+    <div class="screen" id="screen-exam">
+      <div class="lesson-wrap" id="exam-inner" style="background:var(--parch);min-height:100%;"></div>
+    </div>
+
+    <!-- EXAM RESULT -->
+    <div class="screen" id="screen-exam-result">
+      <div class="lesson-wrap" style="background:var(--parch);min-height:100%;">
+        <div class="result-screen" id="exam-result-content"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -468,6 +493,7 @@ function today(){return new Date().toDateString();}
 
 // XP & level
 const XP_THRESHOLDS=[0,50,150,300,500,800,1200,1800,2600,3600];
+const LEVEL_TITLES=['Catechumen','Acolyte','Lector','Confessor','Apologist','Deacon','Scholar','Bishop','Doctor','Doctor Ecclesiae'];
 function addXP(amt,x,y){
   S.xp+=amt;
   for(let i=XP_THRESHOLDS.length-1;i>=0;i--){if(S.xp>=XP_THRESHOLDS[i]){S.level=i+1;break;}}
@@ -480,7 +506,7 @@ function updateTopbar(){
   const curr=XP_THRESHOLDS[lv-1]||0;
   const next=XP_THRESHOLDS[lv]||9999;
   const pct=Math.min(100,Math.round((S.xp-curr)/(next-curr)*100));
-  document.getElementById('lvl-num').textContent=lv;
+  document.getElementById('lvl-label').textContent='Level '+lv+' · '+LEVEL_TITLES[Math.min(lv,10)-1];
   document.getElementById('xp-next-label').textContent=(next-S.xp)+' XP to next level';
   document.getElementById('xp-fill').style.width=pct+'%';
   document.getElementById('streak-disp').textContent=S.streak;
@@ -541,6 +567,10 @@ function L1_QUESTIONS(){return[
   {type:'mc',era:'Early Church',q:'Where did the church first begin, according to the book of Acts?',correct:'Jerusalem',wrong:['Antioch','Rome','Ephesus','Corinth','Bethlehem','Alexandria','Athens'],explain:'The church was born in Jerusalem on the day of Pentecost, though it spread quickly — Antioch later became the first great Gentile center.'},
   {type:'tf',era:'Early Church',q:'The Apostle John was martyred by beheading in Rome, like Peter and Paul.',answer:false,explain:'John is the only apostle traditionally believed to have died of old age, not martyrdom — exiled to Patmos under Domitian, where he wrote Revelation.'},
   {type:'mc',era:'Early Church',q:'Which Roman emperor first made Christianity the official state religion of the Roman Empire?',correct:'Theodosius I',wrong:['Constantine','Nero','Julian','Diocletian','Hadrian','Augustus','Valerian'],explain:'While Constantine legalized Christianity in 313, it was Theodosius I who made it the official state religion in 380 AD with the Edict of Thessalonica.'},
+  {type:'quote',era:'Early Church',quote:'“Eighty-six years I have served him, and he has done me no wrong. How can I blaspheme my King who saved me?”',cite:'— Before his martyrdom, c. AD 155',q:'Who said this shortly before being burned alive?',correct:'Polycarp of Smyrna',wrong:['Ignatius of Antioch','Justin Martyr','Tertullian of Carthage','Origen of Alexandria','Clement of Rome','Cyprian of Carthage','Irenaeus of Lyon'],explain:'Polycarp, bishop of Smyrna and disciple of the Apostle John, refused to deny Christ before his Roman executioners at age 86.'},
+  {type:'quote',era:'Early Church',quote:'“The blood of the martyrs is the seed of the church.”',cite:'— Apologeticus, c. AD 197',q:'Who wrote this famous line about Christian persecution?',correct:'Tertullian of Carthage',wrong:['Polycarp of Smyrna','Justin Martyr','Origen of Alexandria','Clement of Rome','Ignatius of Antioch','Cyprian of Carthage','Irenaeus of Lyon'],explain:'Tertullian argued that persecution paradoxically strengthened the church — each martyrdom drew more converts than it silenced.'},
+  {type:'timeline',era:'Early Church',q:'Tap these events in chronological order, earliest first.',events:[{label:'Pentecost — the church begins in Jerusalem',year:30},{label:'Paul\'s first missionary journey',year:46},{label:'Nero blames Christians for the Great Fire',year:64},{label:'Romans destroy Jerusalem and the Temple',year:70},{label:'John writes Revelation from Patmos',year:95}],explain:'Pentecost (c. 30) → Paul\'s first journey (c. 46–48) → Neronian persecution (64) → Jerusalem destroyed (70) → Revelation written (c. 95).'},
+  {type:'timeline',era:'Early Church',q:'Tap these events in chronological order, earliest first.',events:[{label:'Nero blames Christians for the Great Fire',year:64},{label:'Polycarp martyred at Smyrna',year:155},{label:'Tertullian coins the term Trinity',year:200},{label:'Edict of Milan legalizes Christianity',year:313},{label:'First Council of Nicaea',year:325}],explain:'Great Fire blamed on Christians (64) → Polycarp\'s martyrdom (c. 155) → Tertullian\'s Trinitas (c. 200) → Edict of Milan (313) → Nicaea (325).'},
 ]}
 
 function L2_QUESTIONS(){return[
@@ -560,6 +590,9 @@ function L2_QUESTIONS(){return[
   {type:'tf',era:'Councils',q:'Arius\'s slogan was "There was a time when the Son was not."',answer:true,explain:'This phrase — asserting the Son had a beginning and was therefore not eternal — was the heart of Arianism and the target of the Nicene homoousios formula.'},
   {type:'mc',era:'Patristics',q:'Which church father is often called the "father of Latin theology" for writing the first major theology in Latin?',correct:'Tertullian',wrong:['Augustine','Ambrose','Jerome','Cyprian','Lactantius','Hilary of Poitiers','Leo the Great'],explain:'Tertullian of Carthage was the first major Christian theologian to write primarily in Latin, coining terms that shaped Western theology for centuries.'},
   {type:'mc',era:'Councils',q:'Which council dealt with the Nestorian controversy, condemning the view that Christ\'s two natures implied two persons?',correct:'Council of Ephesus (431)',wrong:['Council of Nicaea (325)','Council of Constantinople (381)','Council of Chalcedon (451)','Council of Trent (1545)','Council of Carthage (397)','Lateran Council (1215)','Council of Constance (1415)'],explain:'Ephesus (431) condemned Nestorius, who seemed to divide Christ into two persons. The council affirmed Mary as Theotokos as a corollary of Christ\'s unified personhood.'},
+  {type:'quote',era:'Patristics',quote:'"Our heart is restless until it rests in Thee."',cite:'— Confessions, Book I, c. AD 400',q:'Which church father wrote this opening line in his Confessions?',correct:'Augustine of Hippo',wrong:['Ambrose of Milan','Jerome of Bethlehem','John Chrysostom','Origen of Alexandria','Basil of Caesarea','Gregory of Nazianzus','Tertullian of Carthage'],explain:'Augustine wrote this in the opening paragraph of his Confessions — widely considered one of the most quoted lines in all of Christian literature.'},
+  {type:'timeline',era:'Councils',q:'Tap these councils in chronological order, earliest first.',events:[{label:'Nicaea — Son declared homoousios with the Father',year:325},{label:'Constantinople — Spirit\'s full divinity affirmed',year:381},{label:'Augustine begins The City of God',year:413},{label:'Ephesus — Mary declared Theotokos',year:431},{label:'Chalcedon — two natures in one person',year:451}],explain:'Nicaea (325) → Constantinople (381) → City of God begun (413) → Ephesus (431) → Chalcedon (451).'},
+  {type:'timeline',era:'Patristics',q:'Tap these church fathers in order of their birth year, earliest first.',events:[{label:'Tertullian of Carthage',year:155},{label:'Origen of Alexandria',year:185},{label:'Athanasius of Alexandria',year:296},{label:'John Chrysostom',year:349},{label:'Augustine of Hippo',year:354}],explain:'Tertullian (c. 155) → Origen (c. 185) → Athanasius (c. 296) → Chrysostom (c. 349) → Augustine (354).'},
 ]}
 
 function L3_QUESTIONS(){return[
@@ -579,6 +612,8 @@ function L3_QUESTIONS(){return[
   {type:'tf',era:'Medieval',q:'Medieval monasteries played a significant role in preserving literacy and ancient texts during the collapse of the Roman Empire.',answer:true,explain:'Monasteries were the primary centers of literacy, manuscript copying, education, and healthcare in early medieval Europe — preserving classical and biblical texts that might otherwise have been lost.'},
   {type:'mc',era:'Medieval',q:'What was the Fourth Lateran Council of 1215 most famous for defining?',correct:'Transubstantiation — the doctrine that the bread and wine become the body and blood of Christ',wrong:['The authority of the pope over all secular rulers','The number of books in the biblical canon','The procedure for electing a new pope','The proper form of baptism by immersion','The condemnation of the Crusades as unjust wars','The reunification of Eastern and Western Christianity','The founding of the Franciscan and Dominican orders'],explain:'Lateran IV officially defined transubstantiation as doctrine and mandated annual confession and communion for all Catholics — among its many sweeping reforms.'},
   {type:'mc',era:'Medieval',q:'Which of the following best describes the relationship between popes and kings in the medieval period?',correct:'A recurring power struggle over who held ultimate authority — spiritual or temporal',wrong:['A peaceful partnership where popes handled religion and kings handled politics','Popes always had final authority over kings without exception','Kings always held final authority and the church served the state','A separation of church and state as understood in modern democracies','Popes and kings jointly elected each other in a shared council','The church was subordinate to the Holy Roman Emperor at all times','Kings held ecclesiastical appointments while popes held political ones'],explain:'The medieval period was defined by recurring conflict between papal and royal authority — over appointments, taxation, war, and excommunication — with power shifting constantly.'},
+  {type:'timeline',era:'Medieval',q:'Tap these events in chronological order, earliest first.',events:[{label:'Benedict founds Monte Cassino',year:529},{label:'Charlemagne crowned Holy Roman Emperor',year:800},{label:'Great Schism — East and West split',year:1054},{label:'Pope Urban II calls the First Crusade',year:1095},{label:'Jan Hus burned at the Council of Constance',year:1415}],explain:'Monte Cassino (529) → Charlemagne crowned (800) → Great Schism (1054) → First Crusade (1095) → Hus burned (1415).'},
+  {type:'timeline',era:'Medieval',q:'Tap these medieval thinkers in order of their birth year, earliest first.',events:[{label:'Anselm of Canterbury',year:1033},{label:'Peter Abelard',year:1079},{label:'Francis of Assisi',year:1181},{label:'Thomas Aquinas',year:1225},{label:'John Wycliffe',year:1320}],explain:'Anselm (1033) → Abelard (1079) → Francis (1181) → Aquinas (1225) → Wycliffe (1320).'},
 ]}
 
 function L4_QUESTIONS(){return[
@@ -598,6 +633,9 @@ function L4_QUESTIONS(){return[
   {type:'mc',era:'Modern',q:'John Wesley\'s Methodism was significant in the 18th century because it:',correct:'Became a mass movement transforming English working-class life through revival preaching',wrong:['Formally separated from the Church of England to become a new denomination','Rejected the doctrine of the Trinity in favor of Unitarian beliefs','Spread primarily among the aristocracy and educated classes','Focused exclusively on foreign missions rather than domestic renewal','Established the first Sunday schools as a means of evangelism','United with the Calvinist wing of the Reformation to form one body','Introduced the practice of infant baptism to Protestants for the first time'],explain:'Wesley\'s open-air preaching and organizational genius transformed English working-class life — though Wesley himself never formally left the Church of England.'},
   {type:'tf',era:'Reformation',q:'The Westminster Confession of Faith (1647) remains the doctrinal standard for many Presbyterian churches worldwide today.',answer:true,explain:'Produced by the Westminster Assembly (1643–1649), the Confession remains the primary doctrinal standard for Presbyterian and many Reformed churches globally.'},
   {type:'mc',era:'Modern',q:'Where is the center of gravity of global Christianity shifting in the 21st century?',correct:'Sub-Saharan Africa, Latin America, and South Korea',wrong:['Western Europe and North America','Russia and Eastern Europe','The Middle East and North Africa','China and Japan','Australia and New Zealand','Central Asia and India','Scandinavia and the British Isles'],explain:'Christianity\'s most vibrant growth is now in the Global South — sub-Saharan Africa, Latin America, and South Korea — not in the declining churches of Western Europe where the story began.'},
+  {type:'quote',era:'Reformation',quote:'“Here I stand; I can do no other. God help me. Amen.”',cite:'— Diet of Worms, 1521',q:'Who spoke these words before Emperor Charles V, refusing to recant his writings?',correct:'Martin Luther',wrong:['John Calvin','William Tyndale','Jan Hus','Philip Melanchthon','Ulrich Zwingli','Thomas Cranmer','John Knox'],explain:'Luther spoke these words at the Diet of Worms in 1521 after being ordered to recant. He was declared an outlaw of the empire but was sheltered at Wartburg Castle, where he translated the New Testament into German.'},
+  {type:'timeline',era:'Reformation',q:'Tap these Reformation-era events in chronological order, earliest first.',events:[{label:'Luther posts the 95 Theses',year:1517},{label:'Luther stands at the Diet of Worms',year:1521},{label:'Calvin publishes the Institutes',year:1536},{label:'Council of Trent opens',year:1545},{label:'Westminster Confession of Faith',year:1647}],explain:'95 Theses (1517) → Diet of Worms (1521) → Calvin\'s Institutes (1536) → Council of Trent (1545) → Westminster Confession (1647).'},
+  {type:'timeline',era:'Modern',q:'Tap these modern church history events in chronological order, earliest first.',events:[{label:'William Carey sails for India',year:1793},{label:'Spurgeon begins at Metropolitan Tabernacle',year:1861},{label:'Edinburgh Missionary Conference',year:1910},{label:'Vatican II opens',year:1962},{label:'Mutual excommunications of 1054 lifted',year:1964}],explain:'Carey to India (1793) → Spurgeon at Met Tab (1861) → Edinburgh (1910) → Vatican II (1962) → Excommunications lifted (1964).'},
 ]}
 
 // ═══════════════════════════════════════════
@@ -656,6 +694,7 @@ function renderHome(){
         <span>${tr.eyebrow}</span>
         <div class="tc-progress-track"><div class="tc-progress-fill${isComplete?' done':''}" style="width:${pct}%"></div></div>
         <span class="tc-badge ${badgeCls}">${badgeTxt}</span>
+        ${(ts.exam&&ts.exam.passed)?`<span class="wax-seal"><i class="ti ti-award"></i> Passed</span>`:''}
       </div>`;
     if(!isLocked) div.onclick=()=>{currentTrack=tr;renderTrackDetail(tr);showScreen('track');};
     c.appendChild(div);
@@ -741,6 +780,28 @@ function renderTrackDetail(tr){
   });
 
   c.appendChild(list);
+
+  // Exam CTA — show when all lessons complete
+  const allDone=tr.lessons.length>0&&tr.lessons.every(l=>(ts.lessons[l.id]||0)>=1);
+  if(allDone){
+    const examDiv=document.createElement('div');
+    examDiv.className='exam-cta';
+    const ex=ts.exam;
+    if(ex){
+      const starsHtml=[1,2,3].map(i=>`<i class="ti ti-star" style="color:${i<=ex.stars?'var(--gold)':'var(--parch2)'};font-size:18px;margin:0 2px;"></i>`).join('');
+      examDiv.innerHTML=`
+        <div class="exam-cta-eyebrow">Track Examination</div>
+        <div style="margin-bottom:6px;">${starsHtml}</div>
+        <p>Best score: ${ex.score}%${ex.passed?' · Passed':' · Not yet passed'}</p>
+        <button class="btn btn-primary" onclick="startExam('${tr.id}')"><i class="ti ti-refresh"></i> Retake Examination</button>`;
+    } else {
+      examDiv.innerHTML=`
+        <div class="exam-cta-eyebrow">Track Examination</div>
+        <p>You\'ve completed all four lessons. Prove your mastery with the final examination.</p>
+        <button class="btn btn-primary" style="background:var(--crimson);border-color:var(--crimson2);" onclick="startExam('${tr.id}')"><i class="ti ti-award"></i> Take the Examination</button>`;
+    }
+    c.appendChild(examDiv);
+  }
 }
 
 // ═══════════════════════════════════════════
@@ -992,9 +1053,15 @@ function startQuiz(tr,lessonIdx){
   const les=tr.lessons[lessonIdx];
   const pool=[...les.questions].sort(()=>Math.random()-0.5).slice(0,8);
   const questions=pool.map(q=>{
-    if(q.type==='mc'){
+    if(q.type==='mc'||q.type==='quote'){
       const{opts,answerIdx}=buildMCOpts(q);
       return{...q,opts,answer:answerIdx};
+    }
+    if(q.type==='timeline'){
+      const shuffled=[...q.events].sort(()=>Math.random()-0.5);
+      const sorted=[...q.events].sort((a,b)=>a.year-b.year);
+      const order=sorted.map(ev=>shuffled.indexOf(ev));
+      return{...q,shuffled,order,timelineStep:0};
     }
     return q;
   });
@@ -1024,9 +1091,17 @@ function renderQuestion(){
   const heartsHtml=[1,2,3].map(i=>`<span class="heart ${i<=ls.lives?'full':'empty'}" id="heart-${i}"><i class="ti ti-heart${i<=ls.lives?'':'-broken'}" style="font-size:22px;"></i></span>`).join('');
 
   let qBody='';
-  if(q.type==='mc'){
-    qBody=`<div class="options" id="opts-container">`+
+  if(q.type==='mc'||q.type==='quote'){
+    const quoteBlock=q.type==='quote'?`<div class="pull-quote" style="margin-bottom:1rem;"><p>${q.quote}</p><cite>${q.cite}</cite></div>`:'';
+    qBody=quoteBlock+`<div class="options" id="opts-container">`+
       q.opts.map((o,i)=>`<button class="opt" onclick="selectOpt(${i})" id="opt-${i}"><span class="opt-letter">${'ABCD'[i]}</span>${o}</button>`).join('')+
+    `</div>`;
+  } else if(q.type==='timeline'){
+    qBody=`<div id="timeline-container" style="display:flex;flex-direction:column;gap:8px;margin-top:1rem;">`+
+      q.shuffled.map((ev,i)=>{
+        const isDone=q.order.slice(0,q.timelineStep).includes(i);
+        return `<button class="opt${isDone?' tl-done':''}" ${isDone?'disabled':`onclick="selectTimeline(${i})"`} id="tl-opt-${i}"><span class="opt-letter">${isDone?(q.order.indexOf(i)+1):'·'}</span>${ev.label}</button>`;
+      }).join('')+
     `</div>`;
   } else {
     qBody=`<div class="tf-row">
@@ -1046,7 +1121,7 @@ function renderQuestion(){
     <div class="q-card" id="q-card">
       <div class="q-card-header">
         <span class="q-era">${q.era}</span>
-        <span class="q-type-badge">${q.type==='tf'?'True / False':'Multiple choice'}</span>
+        <span class="q-type-badge">${q.type==='tf'?'True / False':q.type==='timeline'?'Order the timeline':q.type==='quote'?'Quote':'Multiple choice'}</span>
       </div>
       <div class="q-body">
         <div class="q-text">${q.q}</div>
@@ -1088,6 +1163,44 @@ function selectTF(val){
     if(otherBtn) otherBtn.classList.add('correct');
   }
   handleResult(correct,q.explain);
+}
+
+function selectTimeline(displayIdx){
+  if(lessonState.answered) return;
+  const q=lessonState.questions[lessonState.qIdx];
+  const expectedIdx=q.order[q.timelineStep];
+  if(displayIdx===expectedIdx){
+    q.timelineStep++;
+    const btn=document.getElementById('tl-opt-'+displayIdx);
+    if(btn){btn.classList.add('tl-done');btn.onclick=null;btn.style.cursor='default';const l=btn.querySelector('.opt-letter');if(l)l.textContent=q.timelineStep;}
+    if(q.timelineStep===q.events.length){
+      lessonState.answered=true;
+      lessonState.correct++;
+      lessonState.xpEarned+=10;
+      addXP(10);
+      const fb=document.getElementById('q-feedback');
+      fb.className='q-feedback show correct';
+      fb.innerHTML='<strong>Correct order!</strong> '+q.explain;
+      const cb=document.getElementById('continue-btn');
+      if(cb)cb.style.display='flex';
+    }
+  } else {
+    lessonState.wrong++;
+    lessonState.lives--;
+    q.timelineStep=0;
+    const heartEl=document.getElementById('heart-'+(lessonState.lives+1));
+    if(heartEl)heartEl.classList.add('lost');
+    const wrongBtn=document.getElementById('tl-opt-'+displayIdx);
+    if(wrongBtn){wrongBtn.classList.add('shake');setTimeout(()=>wrongBtn.classList.remove('shake'),450);}
+    const fb=document.getElementById('q-feedback');
+    fb.className='q-feedback show wrong';
+    fb.innerHTML='<strong>Wrong order.</strong> Start from the earliest event.';
+    if(lessonState.lives<=0){
+      setTimeout(()=>showDeathScreen(),1600);
+    } else {
+      setTimeout(()=>renderQuestion(),900);
+    }
+  }
 }
 
 function handleResult(correct,explain){
@@ -1140,6 +1253,161 @@ function retryLesson(){
   startLesson(currentTrack,currentLessonIdx);
 }
 
+// ═══════════════════════════════════════════
+// EXAM ENGINE
+// ═══════════════════════════════════════════
+let examState=null;
+
+function startExam(trackId){
+  const all=[...L1_QUESTIONS(),...L2_QUESTIONS(),...L3_QUESTIONS(),...L4_QUESTIONS()];
+  const shuffledAll=[...all].sort(()=>Math.random()-0.5);
+  const picked=shuffledAll.slice(0,20);
+  const questions=picked.map(q=>{
+    if(q.type==='mc'||q.type==='quote'){
+      const{opts,answerIdx}=buildMCOpts(q);
+      return{...q,opts,answer:answerIdx};
+    }
+    if(q.type==='timeline'){
+      const shuffled=[...q.events].sort(()=>Math.random()-0.5);
+      const sorted=[...q.events].sort((a,b)=>a.year-b.year);
+      const order=sorted.map(ev=>shuffled.indexOf(ev));
+      return{...q,shuffled,order,timelineStep:0,examWrongCounted:false};
+    }
+    return{...q};
+  });
+  examState={trackId,questions,qIdx:0,correct:0,wrong:0};
+  renderExamQuestion();
+  showScreen('exam');
+}
+
+function renderExamQuestion(){
+  const es=examState;
+  if(es.qIdx>=es.questions.length){finishExam();return;}
+  const q=es.questions[es.qIdx];
+  const prog=`${es.qIdx+1} / ${es.questions.length}`;
+
+  let qBody='';
+  if(q.type==='mc'||q.type==='quote'){
+    const quoteBlock=q.type==='quote'?`<div class="pull-quote" style="margin-bottom:1rem;"><p>${q.quote}</p><cite>${q.cite}</cite></div>`:'';
+    qBody=quoteBlock+`<div class="options" id="exam-opts-container">`+
+      q.opts.map((o,i)=>`<button class="opt" onclick="selectExamOpt(${i})" id="exam-opt-${i}"><span class="opt-letter">${'ABCD'[i]}</span>${o}</button>`).join('')+
+    `</div>`;
+  } else if(q.type==='tf'){
+    qBody=`<div class="options" id="exam-opts-container">
+      <button class="opt" onclick="selectExamTF(true)" id="exam-opt-true"><span class="opt-letter">T</span>True</button>
+      <button class="opt" onclick="selectExamTF(false)" id="exam-opt-false"><span class="opt-letter">F</span>False</button>
+    </div>`;
+  } else if(q.type==='timeline'){
+    qBody=`<div id="exam-timeline-container" style="display:flex;flex-direction:column;gap:8px;margin-top:1rem;">`+
+      q.shuffled.map((ev,i)=>{
+        const isDone=q.order.slice(0,q.timelineStep).includes(i);
+        return `<button class="opt${isDone?' tl-done':''}" ${isDone?'disabled':`onclick="selectExamTimeline(${i})"`} id="exam-tl-opt-${i}"><span class="opt-letter">${isDone?(q.order.indexOf(i)+1):'·'}</span>${ev.label}</button>`;
+      }).join('')+`</div>`;
+  }
+
+  const badgeTxt=q.type==='tf'?'True / False':q.type==='timeline'?'Order the timeline':q.type==='quote'?'Quote':'Multiple choice';
+
+  document.getElementById('exam-inner').innerHTML=`
+    <div class="exam-seal-bar">
+      <div class="exam-eyebrow">Track 1 Examination</div>
+      <div class="exam-title">Final Examination</div>
+      <div class="exam-prog">${prog}</div>
+    </div>
+    <div class="q-type-badge">${badgeTxt}</div>
+    <div class="q-text">${q.q}</div>
+    ${qBody}
+    <div class="q-feedback" id="exam-feedback"></div>
+    <div class="q-continue" id="exam-continue-btn" style="display:none;">
+      <button class="btn btn-primary" onclick="nextExamQ()"><i class="ti ti-arrow-right"></i> Continue</button>
+    </div>`;
+}
+
+function selectExamOpt(idx){
+  const q=examState.questions[examState.qIdx];
+  const correct=idx===q.answer;
+  document.querySelectorAll('#exam-opts-container .opt').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.answer) b.classList.add('correct');
+    else if(i===idx&&!correct) b.classList.add('wrong');
+  });
+  handleExamResult(correct,q.explain);
+}
+
+function selectExamTF(val){
+  const q=examState.questions[examState.qIdx];
+  const correct=val===q.answer;
+  ['true','false'].forEach(v=>{
+    const b=document.getElementById('exam-opt-'+v);
+    if(b){b.disabled=true;if(String(q.answer)===v) b.classList.add('correct');else if(String(val)===v&&!correct) b.classList.add('wrong');}
+  });
+  handleExamResult(correct,q.explain);
+}
+
+function selectExamTimeline(displayIdx){
+  const q=examState.questions[examState.qIdx];
+  if(displayIdx===q.order[q.timelineStep]){
+    const btn=document.getElementById('exam-tl-opt-'+displayIdx);
+    if(btn){btn.disabled=true;btn.classList.add('tl-done');btn.querySelector('.opt-letter').textContent=q.timelineStep+1;}
+    q.timelineStep++;
+    if(q.timelineStep===q.events.length){
+      handleExamResult(true,q.explain);
+    }
+  } else {
+    const btn=document.getElementById('exam-tl-opt-'+displayIdx);
+    if(btn){btn.classList.add('wrong');setTimeout(()=>btn.classList.remove('wrong'),600);}
+    q.timelineStep=0;
+    const fb=document.getElementById('exam-feedback');
+    fb.className='q-feedback show wrong';
+    fb.innerHTML='<strong>Wrong order</strong> — start over.';
+    setTimeout(renderExamQuestion,900);
+  }
+}
+
+function handleExamResult(correct,explain){
+  if(correct) examState.correct++; else examState.wrong++;
+  const fb=document.getElementById('exam-feedback');
+  fb.className='q-feedback show '+(correct?'correct':'wrong');
+  fb.innerHTML='<strong>'+(correct?'Correct!':'Wrong.')+'</strong> '+explain;
+  document.getElementById('exam-continue-btn').style.display='flex';
+}
+
+function nextExamQ(){
+  examState.qIdx++;
+  renderExamQuestion();
+}
+
+function finishExam(){
+  const es=examState;
+  const pct=Math.round(es.correct/20*100);
+  let stars=0;
+  if(pct>=90) stars=3;
+  else if(pct>=75) stars=2;
+  else if(pct>=60) stars=1;
+  const passed=stars>=1;
+  if(!S.tracks[es.trackId]) S.tracks[es.trackId]={lessons:{}};
+  const prev=S.tracks[es.trackId].exam||{stars:0};
+  if(stars>=prev.stars){
+    S.tracks[es.trackId].exam={passed,score:pct,stars,takenAt:new Date().toISOString()};
+  }
+  save();
+  const starsHtml=[1,2,3].map(i=>`<i class="ti ${i<=stars?'ti-star-filled':'ti-star'}" style="font-size:28px;color:${i<=stars?'var(--gold)':'var(--parch2)'};margin:0 3px;"></i>`).join('');
+  document.getElementById('exam-result-content').innerHTML=`
+    <div class="result-icon ${passed?'green':'red'}"><i class="ti ${passed?'ti-award':'ti-heart-broken'}"></i></div>
+    <div class="result-title">${passed?'Examination passed!':'Not quite'}</div>
+    <div style="margin-bottom:1rem;">${starsHtml}</div>
+    <div class="result-sub">${pct}% correct</div>
+    <div class="result-stats">
+      <div class="rst"><div class="n">${es.correct}</div><div class="l">Correct</div></div>
+      <div class="rst"><div class="n">${es.wrong}</div><div class="l">Wrong</div></div>
+      <div class="rst"><div class="n">${pct}%</div><div class="l">Score</div></div>
+    </div>
+    <div class="result-btns">
+      ${!passed?`<button class="btn btn-gold btn-full" onclick="startExam('${es.trackId}')"><i class="ti ti-refresh"></i> Retake</button>`:''}
+      <button class="btn btn-primary btn-full" onclick="goTrack()"><i class="ti ti-arrow-right"></i> Back to track</button>
+    </div>`;
+  showScreen('exam-result');
+}
+
 function finishLesson(){
   const ls=lessonState;
   const pct=Math.round(ls.correct/ls.questions.length*100);
@@ -1156,7 +1424,7 @@ function finishLesson(){
   }
   save();updateTopbar();
 
-  const starsHtml=[1,2,3].map(i=>`<i class="ti ti-star" style="font-size:28px;color:${i<=stars?'var(--gold)':'var(--parch2)'};margin:0 3px;"></i>`).join('');
+  const starsHtml=[1,2,3].map(i=>`<i class="ti ${i<=stars?'ti-star-filled':'ti-star'}" style="font-size:28px;color:${i<=stars?'var(--gold)':'var(--parch2)'};margin:0 3px;"></i>`).join('');
 
   document.getElementById('lesson-result-content').innerHTML=`
     <div class="result-icon green"><i class="ti ti-trophy"></i></div>
