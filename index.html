@@ -12,7 +12,7 @@
 
   <!-- TOPBAR -->
   <div class="topbar">
-    <div onclick="goHome()" style="cursor:pointer;">
+    <div data-action="goHome" style="cursor:pointer;">
       <div class="brand">From <em>Age</em> to Age</div>
     </div>
     <!-- Legacy elements kept for JS (hidden) -->
@@ -27,8 +27,8 @@
     <div class="topbar-stats" id="topbar-stats-text">Church History</div>
     <!-- Actions -->
     <div class="topbar-actions">
-      <button class="topbar-resume-btn" id="topbar-resume-btn" onclick="handleTopbarResume()">Resume →</button>
-      <button class="sign-out-pill" onclick="signOut()" title="Sign out"><i class="ti ti-logout"></i></button>
+      <button class="topbar-resume-btn" id="topbar-resume-btn" data-action="handleTopbarResume">Resume →</button>
+      <button class="sign-out-pill" data-action="signOut" title="Sign out"><i class="ti ti-logout"></i></button>
     </div>
   </div>
 
@@ -54,7 +54,7 @@
     <!-- TRACK DETAIL -->
     <div class="screen" id="screen-track">
       <div class="detail-wrap">
-        <div class="back-btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> All tracks</div>
+        <div class="back-btn" data-action="goHome"><i class="ti ti-arrow-left"></i> All tracks</div>
         <div class="detail-header">
           <div class="detail-eyebrow" id="td-eyebrow"></div>
           <h2 id="td-title"></h2>
@@ -72,7 +72,7 @@
       <div class="art-footer">
         <div class="art-footer-inner">
           <span class="art-read-label" id="art-read-label"></span>
-          <button class="art-start-quiz" onclick="completeLessonArticle()">Start Learning <i class="ti ti-arrow-right"></i></button>
+          <button class="art-start-quiz" data-action="completeLessonArticle">Start Learning <i class="ti ti-arrow-right"></i></button>
         </div>
       </div>
     </div>
@@ -138,9 +138,9 @@
 
   </div>
 </div>
-<div id="cold-open" class="cold-open" style="display:none;" onclick="advanceColdOpen()">
+<div id="cold-open" class="cold-open" style="display:none;" data-action="advanceColdOpen">
   <div class="co-bg" id="co-bg"></div>
-  <button class="co-skip" onclick="event.stopPropagation();skipColdOpen()">Skip</button>
+  <button class="co-skip" data-action="skipColdOpen">Skip</button>
   <div class="co-stage">
     <div class="co-text" id="co-text"></div>
   </div>
@@ -155,9 +155,9 @@
   <div id="report-panel-title">Report a problem</div>
   <div id="report-context"></div>
   <textarea id="report-note" placeholder="Describe the issue…"></textarea>
-  <button id="report-submit" onclick="submitReport()">Submit</button>
+  <button id="report-submit" data-action="submitReport">Submit</button>
 </div>
-<button id="report-btn" onclick="toggleReportPanel()" title="Report a problem"><i class="ti ti-flag"></i></button>
+<button id="report-btn" data-action="toggleReportPanel" title="Report a problem"><i class="ti ti-flag"></i></button>
 
 <script type="module" src="/src/main.js"></script>
 </body>

@@ -16,7 +16,7 @@ There is no test suite and no linter configured.
 
 ## Architecture
 
-Vanilla JavaScript SPA built with Vite. No framework. All app logic lives in `src/main.js`.
+Vanilla JavaScript SPA built with Vite. No framework. App **logic** lives in `src/main.js`; lesson **content** lives in `src/content/*.js`.
 
 ### Data flow
 
@@ -25,12 +25,11 @@ Vanilla JavaScript SPA built with Vite. No framework. All app logic lives in `sr
 3. `storage.js` — `loadState(userId)` fetches from Supabase (`user_progress`, `lesson_progress`, `exam_results`) and writes to `localStorage` as a cache. `saveState(S)` writes to localStorage immediately and fires an async Supabase upsert. `logExamResult(...)` inserts a new row each time an exam is completed (all attempts are preserved).
 4. `main.js` — holds all state in a single object `S`, renders every screen imperatively via `innerHTML`, and calls `save()` after any mutation.
 
-### Content structure in `main.js`
+### Track config in `main.js`, content in `src/content/*.js`
 
 - `TRACKS` — array of track configs; each track has a `lessons` array with `questions` already resolved by calling the question-pool functions.
-- `DIFFICULTY_GROUPS` — groups `TRACKS` and `COMING_SOON_TRACKS` entries into Beginner / Medium / Expert for the home screen.
-- `L1_ARTICLE_HTML` … `L4_ARTICLE_HTML` — inline HTML strings for the lesson essays (the reading that gates each quiz).
-- `L1_LEARN` … `L4_LEARN` — fill-in-the-blank exercise arrays; each item has `{ sentence, answer, options, explanation, tier }`. Three tiers of difficulty.
+- `DIFFICULTY_GROUPS` — groups `TRACKS` and `COMING_SOON_TRACKS` entries into Foundations / Eras / Traditions / Deep Dives for the home screen.
+- Lesson content is one module per track — `survey.js` (L1–L4), `intro.js` (I1–I10), `medieval.js` (M0–M31), `america.js` (A1–A32). Each exports its `*_ARTICLE_HTML` (essay), `*_LEARN` (fill-in-the-blank), and `*_STUDY` (study card) constants plus an `attach…(TRACKS)` function. `main.js` calls those four attach functions right after `TRACKS` is defined to hang the data (incl. `coldOpen`) onto each lesson.
 
 ### Question data (`questions.js`, `questions_america.js`)
 
@@ -60,6 +59,7 @@ Questions are drawn randomly per session (8 per lesson quiz, 20 for the final ex
 | `user_progress` | `id` (user UUID), `xp`, `level`, `streak`, `last_studied` |
 | `lesson_progress` | `user_id`, `track_id`, `lesson_id`, `stars`, `read_complete`, `learn_tier`, `study_complete` — unique on `(user_id, track_id, lesson_id)` |
 | `exam_results` | `user_id`, `track_id`, `passed`, `score`, `stars`, `taken_at` — one row per attempt |
+| `problem_reports` | `user_id`, `track_id`, `track_name`, `lesson_id`, `lesson_name`, `content_snippet`, `note` — written by the in-app "Report a problem" widget; triaged by the `fix-problem-reports` skill |
 
 ## Keep README.md up to date
 
